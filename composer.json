@@ -1,0 +1,31 @@
+{
+    "name": "nabu-3/devel",
+    "description": "SDK package to extend nabu-3 Framework with extensions for developers",
+    "version": "3.0.0",
+    "type": "project",
+    "keywords": [ "nabu", "nabu-3", "devel", "framework", "frameworks", "sdk" ],
+    "license": "Apache-2.0",
+    "authors": [
+        {
+            "name": "Rafael Gutiérrez",
+            "email": "ragutimar@gmail.com",
+            "role": "Developer"
+        }
+    ],
+    "support": {
+        "issues": "https://github.com/nabu-3/devel/issues"
+    },
+    "config": {
+        "bin-dir": "bin",
+        "vendor-dir": "phputils/lib"
+    },
+    "require": {
+        "nabu-3/core-composer-plugin": "*"
+    },
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/nabu-3/devel"
+        }
+    ]
+}
