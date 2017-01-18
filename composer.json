@@ -19,6 +19,11 @@
         "bin-dir": "bin",
         "vendor-dir": "phputils/lib"
     },
+    "bin": [
+        "bin/nabu-schema2class.php",
+        "bin/inc/db2class.php",
+        "bin/inc/schema2class.php"
+    ],
     "require": {
         "nabu-3/core-composer-plugin": "*"
     },
