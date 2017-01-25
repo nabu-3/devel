@@ -1,9 +1,9 @@
 {
-    "name": "nabu-3/devel",
+    "name": "nabu-3/sdk",
     "description": "SDK package to extend nabu-3 Framework with extensions for developers",
     "version": "3.0.2",
     "type": "devel",
-    "keywords": [ "nabu", "nabu-3", "devel", "framework", "frameworks", "sdk" ],
+    "keywords": [ "nabu", "nabu-3", "devel", "developer", "development", "framework", "frameworks", "sdk" ],
     "license": "Apache-2.0",
     "authors": [
         {
@@ -13,7 +13,7 @@
         }
     ],
     "support": {
-        "issues": "https://github.com/nabu-3/devel/issues"
+        "issues": "https://github.com/nabu-3/sdk/issues"
     },
     "config": {
         "bin-dir": "bin",
@@ -29,7 +29,7 @@
     "repositories": [
         {
             "type": "vcs",
-            "url": "https://github.com/nabu-3/devel"
+            "url": "https://github.com/nabu-3/sdk"
         }
     ]
 }
