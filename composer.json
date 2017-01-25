@@ -1,7 +1,7 @@
 {
     "name": "nabu-3/sdk",
     "description": "SDK package to extend nabu-3 Framework with extensions for developers",
-    "version": "3.0.2",
+    "version": "3.0.3",
     "type": "devel",
     "keywords": [ "nabu", "nabu-3", "devel", "developer", "development", "framework", "frameworks", "sdk" ],
     "license": "Apache-2.0",
@@ -20,11 +20,11 @@
         "vendor-dir": "lib"
     },
     "bin": [
-        "bin/nabu-schema2class.php",
-        ""
+        "bin/nabu-schema2class.sh",
+        "bin/nabu-table2class.sh"
     ],
     "require": {
-        "nabu-3/composer-installer-plugin": "*"
+        "nabu-3/composer-installer-plugin": "~3.0"
     },
     "repositories": [
         {
