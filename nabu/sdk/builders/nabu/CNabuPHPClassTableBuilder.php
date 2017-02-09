@@ -17,11 +17,11 @@
  *  limitations under the License.
  */
 
-namespace devel\builders\nabu;
-use devel\builders\CNabuAbstractBuilder;
-use devel\builders\nabu\base\CNabuPHPClassTableAbstractBuilder;
-use devel\builders\php\CNabuPHPMethodBuilder;
-use devel\builders\php\CNabuPHPConstructorBuilder;
+namespace nabu\sdk\builders\nabu;
+use nabu\sdk\builders\CNabuAbstractBuilder;
+use nabu\sdk\builders\nabu\base\CNabuPHPClassTableAbstractBuilder;
+use nabu\sdk\builders\php\CNabuPHPMethodBuilder;
+use nabu\sdk\builders\php\CNabuPHPConstructorBuilder;
 use nabu\core\exceptions\ENabuCoreException;
 use nabu\db\interfaces\INabuDBConnector;
 use nabu\db\interfaces\INabuDBSyntaxBuilder;
@@ -35,7 +35,7 @@ use nabu\db\interfaces\INabuDBSyntaxBuilder;
  * that your table changes or when Nabu will increase the set of methods.
  * @author Rafael Gutierrez <rgutierrez@wiscot.com>
  * @version 3.0.0 Surface
- * @package \nabu\devel\builders\nabu
+ * @package \nabu\nabu\sdk\builders\nabu
  */
 class CNabuPHPClassTableBuilder extends CNabuPHPClassTableAbstractBuilder
 {

@@ -17,9 +17,9 @@
  *  limitations under the License.
  */
 
-namespace devel\builders\json;
+namespace nabu\sdk\builders\json;
 
-use \devel\builders\CNabuAbstractBuilder;
+use \nabu\sdk\builders\CNabuAbstractBuilder;
 
 /**
  * Main builder for JSON files

@@ -17,34 +17,14 @@
  *  limitations under the License.
  */
 
-namespace devel\builders\interfaces;
+namespace nabu\sdk\utils;
 
 /**
- * Interface to define Nabu builders to create code automatically.
  * @author Rafael Gutierrez <rgutierrez@wiscot.com>
  * @version 3.0.0 Surface
+ * @package name
  */
-interface INabuBuilder
+class CNabuSchema2ClassApp
 {
-    /**
-     * Create the code represented by this instance.
-     * @param string $padding Sequence of characters to place before each line
-     * of code.
-     * @return string Return the code as string.
-     */
-    public function create($padding = '');
-    
-    /**
-     * Return the code represented by this instance.
-     * If CNabuAbstractBuilder::create is not called first, then return
-     * an empty string.
-     * @return string Return the code represented by this instance.
-     */
-    public function getCode();
-    
-    /**
-     * Exports generated code to a file.
-     * @param string $filename File name including full path.
-     */
-    public function exportToFile($filename);
+    /** @todo Implement this class and move here the process of create MySQL Tables as classes **/
 }

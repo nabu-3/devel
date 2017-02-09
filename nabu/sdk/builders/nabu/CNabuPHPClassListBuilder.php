@@ -17,12 +17,12 @@
  *  limitations under the License.
  */
 
-namespace devel\builders\nabu;
-use devel\builders\CNabuAbstractBuilder;
-use devel\builders\nabu\base\CNabuPHPClassTableAbstractBuilder;
-use devel\builders\php\CNabuPHPMethodBuilder;
-use devel\builders\php\CNabuPHPConstantBuilder;
-use devel\builders\php\CNabuPHPConstructorBuilder;
+namespace nabu\sdk\builders\nabu;
+use nabu\sdk\builders\CNabuAbstractBuilder;
+use nabu\sdk\builders\nabu\base\CNabuPHPClassTableAbstractBuilder;
+use nabu\sdk\builders\php\CNabuPHPMethodBuilder;
+use nabu\sdk\builders\php\CNabuPHPConstantBuilder;
+use nabu\sdk\builders\php\CNabuPHPConstructorBuilder;
 use nabu\core\exceptions\ENabuCoreException;
 use nabu\db\interfaces\INabuDBDescriptor;
 
@@ -30,7 +30,7 @@ use nabu\db\interfaces\INabuDBDescriptor;
  * Class to create class list intances.
  * @author Rafael Gutierrez <rgutierrez@wiscot.com>
  * @version 3.0.0 Surface
- * @package \devel\builders\nabu
+ * @package \nabu\sdk\builders\nabu
  */
 class CNabuPHPClassListBuilder extends CNabuPHPClassTableAbstractBuilder
 {

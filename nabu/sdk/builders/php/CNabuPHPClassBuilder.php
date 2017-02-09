@@ -17,17 +17,17 @@
  *  limitations under the License.
  */
 
-namespace devel\builders\php;
+namespace nabu\sdk\builders\php;
 
-use \devel\builders\CNabuAbstractBuilder;
-use \devel\builders\php\CNabuPHPFragmentBuilder;
-use \devel\builders\php\CNabuPHPMethodBuilder;
+use \nabu\sdk\builders\CNabuAbstractBuilder;
+use \nabu\sdk\builders\php\CNabuPHPFragmentBuilder;
+use \nabu\sdk\builders\php\CNabuPHPMethodBuilder;
 
 /**
  * Class to create class database instances.
  * @author Rafael Gutierrez <rgutierrez@wiscot.com>
  * @version 3.0.0 Surface
- * @package \devel\builders\php
+ * @package \nabu\sdk\builders\php
  */
 class CNabuPHPClassBuilder extends CNabuPHPFragmentBuilder
 {

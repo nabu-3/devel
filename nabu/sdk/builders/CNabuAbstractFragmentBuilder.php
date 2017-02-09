@@ -17,7 +17,7 @@
  *  limitations under the License.
  */
 
-namespace devel\builders;
+namespace nabu\sdk\builders;
 
 use \nabu\core\exceptions\ENabuCoreException;
 

@@ -17,9 +17,9 @@
  *  limitations under the License.
  */
 
-namespace devel\builders\php;
+namespace nabu\sdk\builders\php;
 
-use \devel\builders\CNabuAbstractBuilder;
+use \nabu\sdk\builders\CNabuAbstractBuilder;
 
 /**
  * Class to create PHP functions. These functions can be included in classes

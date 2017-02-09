@@ -17,9 +17,9 @@
  *  limitations under the License.
  */
 
-namespace devel\builders\php;
-use devel\builders\CNabuAbstractBuilder;
-use devel\builders\php\CNabuPHPFragmentBuilder;
+namespace nabu\sdk\builders\php;
+use nabu\sdk\builders\CNabuAbstractBuilder;
+use nabu\sdk\builders\php\CNabuPHPFragmentBuilder;
 
 /**
  * Class to create PHP constants. These constants can be included in classes or traits.

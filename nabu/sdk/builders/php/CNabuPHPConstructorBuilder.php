@@ -17,10 +17,10 @@
  *  limitations under the License.
  */
 
-namespace devel\builders\php;
+namespace nabu\sdk\builders\php;
 
-use \devel\builders\CNabuAbstractBuilder;
-use \devel\builders\php\CNabuPHPMethodBuilder;
+use \nabu\sdk\builders\CNabuAbstractBuilder;
+use \nabu\sdk\builders\php\CNabuPHPMethodBuilder;
 
 /**
  * @author Rafael Gutierrez <rgutierrez@wiscot.com>

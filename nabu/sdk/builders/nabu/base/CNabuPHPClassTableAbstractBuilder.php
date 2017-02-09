@@ -17,9 +17,9 @@
  *  limitations under the License.
  */
 
-namespace devel\builders\nabu\base;
-use devel\builders\CNabuAbstractBuilder;
-use devel\builders\php\CNabuPHPClassBuilder;
+namespace nabu\sdk\builders\nabu\base;
+use nabu\sdk\builders\CNabuAbstractBuilder;
+use nabu\sdk\builders\php\CNabuPHPClassBuilder;
 use nabu\core\exceptions\ENabuCoreException;
 use nabu\db\interfaces\INabuDBDescriptor;
 
@@ -27,7 +27,7 @@ use nabu\db\interfaces\INabuDBDescriptor;
  * This class implements a lot of methods shared between different child classes.
  * @author Rafael Gutierrez <rgutierrez@wiscot.com>
  * @version 3.0.0 Surface
- * @package \nabu\devel\builders\nabu
+ * @package \nabu\nabu\sdk\builders\nabu
  */
 class CNabuPHPClassTableAbstractBuilder extends CNabuPHPClassBuilder
 {

@@ -17,10 +17,10 @@
  *  limitations under the License.
  */
 
-use \devel\builders\json\CNabuJSONBuilder;
-use \devel\builders\php\CNabuPHPBuilder;
-use \devel\builders\nabu\CNabuPHPClassTableBuilder;
-use devel\builders\nabu\CNabuPHPClassListBuilder;
+use \nabu\sdk\builders\json\CNabuJSONBuilder;
+use \nabu\sdk\builders\php\CNabuPHPBuilder;
+use \nabu\sdk\builders\nabu\CNabuPHPClassTableBuilder;
+use nabu\sdk\builders\nabu\CNabuPHPClassListBuilder;
 use nabu\core\exceptions\ENabuException;
 
 /**

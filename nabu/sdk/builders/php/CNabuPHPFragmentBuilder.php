@@ -17,10 +17,10 @@
  *  limitations under the License.
  */
 
-namespace devel\builders\php;
+namespace nabu\sdk\builders\php;
 
-use \devel\builders\CNabuAbstractFragmentBuilder;
-use \devel\builders\php\traits\TNabuPHPCommentsBuilder;
+use \nabu\sdk\builders\CNabuAbstractFragmentBuilder;
+use \nabu\sdk\builders\php\traits\TNabuPHPCommentsBuilder;
 
 /**
  * Abstract base class to create PHP fragment classes

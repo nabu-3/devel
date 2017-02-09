@@ -17,7 +17,7 @@
  *  limitations under the License.
  */
 
-namespace devel\builders\php\traits;
+namespace nabu\sdk\builders\php\traits;
 
 /**
  * This trait implements methods related with the creation of comments in PHP.

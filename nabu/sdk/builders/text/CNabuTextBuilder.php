@@ -17,9 +17,9 @@
  *  limitations under the License.
  */
 
-namespace devel\builders\text;
+namespace nabu\sdk\builders\text;
 
-use \devel\builders\CNabuAbstractBuilder;
+use \nabu\sdk\builders\CNabuAbstractBuilder;
 
 /**
  * Main builder for text files

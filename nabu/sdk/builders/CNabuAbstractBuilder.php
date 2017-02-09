@@ -17,10 +17,10 @@
  *  limitations under the License.
  */
 
-namespace devel\builders;
+namespace nabu\sdk\builders;
 
-use \devel\builders\CNabuAbstractFragmentBuilder;
-use \devel\builders\interfaces\INabuBuilder;
+use \nabu\sdk\builders\CNabuAbstractFragmentBuilder;
+use \nabu\sdk\builders\interfaces\INabuBuilder;
 use \nabu\core\CNabuObject;
 
 /**
