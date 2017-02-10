@@ -1,6 +1,6 @@
 #!/bin/sh
 echo ========================================================================
-echo Nabu 3 -  Table to Class extractor
+echo nabu-3 -  Table to Class extractor
 echo ========================================================================
 echo Copyright 2009-2011 Rafael Gutierrez Martinez
 echo Copyright 2012-2013 Welma WEB MKT LABS, S.L.
