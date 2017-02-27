@@ -217,6 +217,14 @@ createEntity(
     $dictionary
 );
 createEntity(
+    'nb_site_module',
+    'nabu\data\site\base',
+    'CNabuSiteModuleBase',
+    'Site Module',
+    true,
+    $dictionary
+);
+createEntity(
     'nb_site_alias',
     'nabu\data\site\base',
     'CNabuSiteAliasBase',

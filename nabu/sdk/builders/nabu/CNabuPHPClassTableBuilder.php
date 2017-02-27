@@ -392,7 +392,7 @@ class CNabuPHPClassTableBuilder extends CNabuPHPClassTableAbstractBuilder
                 $part_where =  "$name=%$name\\\$d";
                 break;
             case 'varchar':
-                $part_if = "\$this-isValueString('$name')";
+                $part_if = "\$this->isValueString('$name')";
                 $part_where = "$name='%$name\\\$s'";
                 break;
             default:
