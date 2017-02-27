@@ -430,3 +430,21 @@ createEntity(
     true,
     $dictionary
 );
+
+// Messaging: nabu\data\messaging\base
+createEntity(
+    'nb_messaging',
+    'nabu\data\messaging\base',
+    'CNabuMessagingBase',
+    'Messaging',
+    true,
+    $dictionary
+);
+createEntity(
+    'nb_messaging_account',
+    'nabu\data\messaging\base',
+    'CNabuMessagingAccountBase',
+    'Messaging Account',
+    true,
+    $dictionary
+);
