@@ -34,8 +34,9 @@ use nabu\db\interfaces\INabuDBSyntaxBuilder;
  * extend functionalities, allowing to you to recreate base class each time
  * that your table changes or when Nabu will increase the set of methods.
  * @author Rafael Gutierrez <rgutierrez@wiscot.com>
- * @version 3.0.0 Surface
- * @package \nabu\nabu\sdk\builders\nabu
+ * @since 3.0.0 Surface
+ * @version 3.0.7 Surface
+ * @package \nabu\sdk\builders\nabu
  */
 class CNabuPHPClassTableBuilder extends CNabuPHPClassTableAbstractBuilder
 {
@@ -165,6 +166,11 @@ class CNabuPHPClassTableBuilder extends CNabuPHPClassTableAbstractBuilder
             $this->addUse('TNabuMediotecaChild');
         }
 
+        if ($this->is_messaging_child || $this->is_messaging_foreign) {
+            $this->getDocument()->addUse('\nabu\data\messaging\traits\TNabuMessagingChild');
+            $this->addUse('TNabuMessagingChild');
+        }
+
         if ($this->is_role_child || $this->is_role_foreign) {
             $this->getDocument()->adduse('\nabu\data\security\traits\TNabuRoleChild');
             $this->addUse('TNabuRoleChild');
@@ -262,7 +268,7 @@ class CNabuPHPClassTableBuilder extends CNabuPHPClassTableAbstractBuilder
     {
         $table_descriptor = $this->getStorageDescriptor();
 
-        $this->getDocument()->addUse('\\nabu\\db\\CNabuDBInternalObject');
+        $this->getDocument()->addUse('\nabu\db\CNabuDBInternalObject');
         $this->setExtends('CNabuDBInternalObject');
 
         $fragment = new CNabuPHPConstructorBuilder($this);
@@ -508,7 +514,7 @@ class CNabuPHPClassTableBuilder extends CNabuPHPClassTableAbstractBuilder
                 "    );",
                 "}"
             ));
-            $this->getDocument()->addUse('\\nabu\\core\\exceptions\\ENabuCoreException');
+            $this->getDocument()->addUse('\nabu\core\exceptions\ENabuCoreException');
         }
 
         $table = $this->getStorageDescriptor()->getStorageName();
@@ -701,6 +707,37 @@ class CNabuPHPClassTableBuilder extends CNabuPHPClassTableAbstractBuilder
                     "",
                     "return \$retval;"
                 ));
+            } elseif ($this->is_messaging_child || $this->is_messaging_foreign) {
+                $this->getDocument()->addUse('\nabu\data\messaging\CNabuMessaging');
+                $fragment->addParam(
+                    NABU_MESSAGING_TABLE, 'CNabuMessaging', false, false,
+                    'CNabuMessaging', "The CNabuMessaging instance of the Messagin that owns the $this->entity_name List"
+                );
+                $fragment->addFragment(array(
+                    "\$" . NABU_MESSAGING_FIELD_ID
+                         . " = nb_getMixedValue(\$"
+                         . NABU_MESSAGING_TABLE
+                         . ", '"
+                         . NABU_MESSAGING_FIELD_ID
+                         . "');",
+                    "if (is_numeric(\$" . NABU_MESSAGING_FIELD_ID . ")) {",
+                    "    \$retval = forward_static_call(",
+                    "    array(get_called_class(), 'buildObjectListFromSQL'),",
+                    "        '$key',",
+                    "        'select * '",
+                    "        . 'from $this->table '",
+                    "       . 'where " . NABU_MESSAGING_FIELD_ID . "=%messaging_id\$d',",
+                    "        array(",
+                    "            'messaging_id' => \$" . NABU_MESSAGING_FIELD_ID,
+                    "        ),",
+                    "        \$" . NABU_MESSAGING_TABLE,
+                    "    );",
+                    "} else {",
+                    "    \$retval = null;",
+                    "}",
+                    "",
+                    "return \$retval;"
+                ));
             } else {
                 $fragment->addFragment(array(
                     "return forward_static_call(",
@@ -740,10 +777,22 @@ class CNabuPHPClassTableBuilder extends CNabuPHPClassTableAbstractBuilder
                     'mixed', 'Site instance, object containing a Site Id field or an Id.'
                 );
             }
+            if ($this->is_catalog_foreign) {
+                $fragment->addParam(
+                    'nb_catalog', null, false, false,
+                    'mixed', 'Catalog instance, object containing a Catalog Id field or an Id.'
+                );
+            }
             if ($this->is_medioteca_foreign) {
                 $fragment->addParam(
                     'nb_medioteca', null, true, null,
                     'mixed', 'Medioteca instance, object containing a Medioteca Id field or an Id.'
+                );
+            }
+            if ($this->is_messaging_foreign) {
+                $fragment->addParam(
+                    'nb_messaging', null, true, null,
+                    'mixed', 'Messaging instance, object containing a Messaging Id field or an Id.'
                 );
             }
             $fragment->addParam(
@@ -803,6 +852,11 @@ class CNabuPHPClassTableBuilder extends CNabuPHPClassTableAbstractBuilder
                     '$' . NABU_MEDIOTECA_FIELD_ID . ' = nb_getMixedValue($nb_customer, NABU_MEDIOTECA_FIELD_ID);',
                     'if (is_numeric($' . NABU_MEDIOTECA_FIELD_ID . ')) {'
                 ));
+            } elseif ($this->is_messaging_foreign) {
+                $fragment->addFragment(array(
+                    '$' . NABU_MESSAGING_FIELD_ID . ' = nb_getMixedValue($nb_customer, NABU_MESSAGING_FIELD_ID);',
+                    'if (is_numeric($' . NABU_MESSAGING_FIELD_ID . ')) {'
+                ));
             }
 
             $padding = ($is_enclosed ? '    ' : '');
@@ -831,6 +885,8 @@ class CNabuPHPClassTableBuilder extends CNabuPHPClassTableAbstractBuilder
                 $fragment->addFragment($padding . "   . 'where ' . NABU_CATALOG_FIELD_ID . '=%catalog_id\$d '");
             } elseif ($this->is_medioteca_foreign) {
                 $fragment->addFragment($padding . "   . 'where ' . NABU_MEDIOTECA_FIELD_ID . '=%medioteca_id\$d '");
+            } elseif ($this->is_messaging_foreign) {
+                $fragment->addFragment($padding . "   . 'where ' . NABU_MESSAGING_FIELD_ID . '=%messaging_id\$d '");
             }
             $fragment->addFragment(array(
                 $padding . '    . ($order_part ? "order by $order_part " : \'\')',
@@ -847,6 +903,8 @@ class CNabuPHPClassTableBuilder extends CNabuPHPClassTableAbstractBuilder
                 $fragment->addFragment($padding . '        \'catalog_id\' => $' . NABU_CATALOG_FIELD_ID);
             } elseif ($this->is_medioteca_foreign) {
                 $fragment->addFragment($padding . '        \'medioteca_id\' => $' . NABU_MEDIOTECA_FIELD_ID);
+            } elseif ($this->is_messaging_foreign) {
+                $fragment->addFragment($padding . '        \'messaging_id\' => $' . NABU_MESSAGING_FIELD_ID);
             }
             $fragment->addFragment(array(
                 $padding . '    )',
@@ -884,7 +942,7 @@ class CNabuPHPClassTableBuilder extends CNabuPHPClassTableAbstractBuilder
                          ? preg_replace('/Base$/', '', $this->name)
                          : $this->name
             ;
-            $keyed_namespace = nb_strEndsWith($this->class_namespace, '\\base')
+            $keyed_namespace = nb_strEndsWith($this->class_namespace, '\base')
                              ? preg_replace('/\\\\base$/', '', $this->class_namespace)
                              : $this->class_namespace
             ;
@@ -917,6 +975,11 @@ class CNabuPHPClassTableBuilder extends CNabuPHPClassTableAbstractBuilder
                 $fragment->addParam(
                     NABU_MEDIOTECA_TABLE, null, false, false,
                     'mixed', "Medioteca that owns $this->entity_name"
+                );
+            } elseif ($this->is_messaging_child || $this->is_messaging_foreign) {
+                $fragment->addParam(
+                    NABU_MESSAGING_TABLE, null, false, false,
+                    'mixed', "Messaging that owns $this->entity_name"
                 );
             }
             $fragment->addParam('key', null, false, false, 'string', 'Key to search');
@@ -1046,6 +1109,31 @@ class CNabuPHPClassTableBuilder extends CNabuPHPClassTableAbstractBuilder
                     "",
                     "return \$retval;"
                 ));
+            } elseif ($this->is_messaging_child || $this->is_messaging_foreign) {
+                $fragment->addFragment(array(
+                    "\$" . NABU_MESSAGING_FIELD_ID
+                         . " = nb_getMixedValue(\$"
+                         . NABU_MESSAGING_TABLE
+                         . ", '"
+                         . NABU_MESSAGING_FIELD_ID
+                         . "');",
+                    "if (is_numeric(\$" . NABU_MESSAGING_FIELD_ID . ")) {",
+                    "    \$retval = $keyed_class::buildObjectFromSQL(",
+                    "            'select * '",
+                    "            . 'from $this->table '",
+                    "           . 'where " . NABU_MESSAGING_FIELD_ID . "=%messaging_id\$d '",
+                    "             . \"and $key_name='%key\\\$s'\",",
+                    "            array(",
+                    "                'messaging_id' => \$" . NABU_MESSAGING_FIELD_ID . ",",
+                    "                'key' => \$key",
+                    "            )",
+                    "    );",
+                    "} else {",
+                    "    \$retval = null;",
+                    "}",
+                    "",
+                    "return \$retval;"
+                ));
             } else {
                 $fragment->addFragment(array(
                     "return $keyed_class::buildObjectFromSQL(",
@@ -1072,7 +1160,7 @@ class CNabuPHPClassTableBuilder extends CNabuPHPClassTableAbstractBuilder
                        ? preg_replace('/Base$/', 'Language', $this->name)
                        : $this->name . 'Language'
             ;
-            $lang_namespace = nb_strEndsWith($this->class_namespace, '\\base')
+            $lang_namespace = nb_strEndsWith($this->class_namespace, '\base')
                             ? preg_replace('/\\\\base$/', '', $this->class_namespace)
                             : $this->class_namespace
             ;
@@ -1098,7 +1186,7 @@ class CNabuPHPClassTableBuilder extends CNabuPHPClassTableAbstractBuilder
                           )
             ;
             if ($translated_class !== null) {
-                $translated_namespace = nb_strEndsWith($this->class_namespace, '\\base')
+                $translated_namespace = nb_strEndsWith($this->class_namespace, '\base')
                                       ? preg_replace('/\\\\base$/', '', $this->class_namespace)
                                       : $this->class_namespace
                 ;
@@ -1145,7 +1233,7 @@ class CNabuPHPClassTableBuilder extends CNabuPHPClassTableAbstractBuilder
 
         $this->addFragment($fragment);
 
-        $this->getDocument()->addUse('\\nabu\\data\\lang\\interfaces\\INabuTranslation');
+        $this->getDocument()->addUse('\nabu\data\lang\interfaces\INabuTranslation');
         $this->getDocument()->addUse('\\' . $lang_namespace . '\\' . $lang_class);
     }
 
@@ -1162,10 +1250,10 @@ class CNabuPHPClassTableBuilder extends CNabuPHPClassTableAbstractBuilder
         );
 
         $fragment = new CNabuPHPMethodBuilder($this, 'getLanguages');
-        $fragment->addComment("Get all language instances corresponding to available translations.");
+        $fragment->addComment('Get all language instances corresponding to available translations.');
         $fragment->addComment(
-                "@return null|array Return an array of \\nabu\\data\\lang\\CNabuLanguage instances if "
-               . "they have translations or null if not."
+                '@return null|array Return an array of \nabu\data\lang\CNabuLanguage instances if '
+               . 'they have translations or null if not.'
         );
         $fragment->addParam(
                 'force', null, true, false, 'bool',
@@ -1175,7 +1263,7 @@ class CNabuPHPClassTableBuilder extends CNabuPHPClassTableAbstractBuilder
 
         $this->addFragment($fragment);
 
-        $this->getDocument()->addUse('\\nabu\\core\\CNabuEngine');
+        $this->getDocument()->addUse('\nabu\core\CNabuEngine');
         $this->getDocument()->addUse('\\' . $lang_namespace . '\\' . $lang_class);
     }
 
@@ -1244,7 +1332,7 @@ class CNabuPHPClassTableBuilder extends CNabuPHPClassTableAbstractBuilder
 
         $this->addFragment($fragment);
 
-        $this->getDocument()->addUse('\\nabu\\core\\CNabuEngine');
+        $this->getDocument()->addUse('\nabu\core\CNabuEngine');
         $this->getDocument()->addUse('\\' . $lang_namespace . '\\' . $lang_class);
     }
 
@@ -1284,7 +1372,7 @@ class CNabuPHPClassTableBuilder extends CNabuPHPClassTableAbstractBuilder
         $fragment->addFragment($output);
         $this->addFragment($fragment);
 
-        $this->getDocument()->addUse('\\nabu\\data\\CNabuDataObject');
+        $this->getDocument()->addUse('\nabu\data\CNabuDataObject');
         $this->getDocument()->addUse('\\' . $lang_namespace . '\\' . $lang_class);
         $this->getDocument()->addUse('\\' . $lang_namespace . '\\builtin\\' . $builtin_class);
     }
@@ -1308,7 +1396,7 @@ class CNabuPHPClassTableBuilder extends CNabuPHPClassTableAbstractBuilder
         $fragment->addComment(
                 'Query the storage to retrieve the full list of available languages (those that '
               . 'correspond to existent translations) for $translated and returns an associative '
-              . 'array in which each one is of class \\nabu\\data\\lang\\CNabuLanguage.'
+              . 'array in which each one is of class \nabu\data\lang\CNabuLanguage.'
         );
         $fragment->addComment(
                 '@return false|null|array Returns an associative array indexed by the language Id, '
@@ -1322,8 +1410,8 @@ class CNabuPHPClassTableBuilder extends CNabuPHPClassTableAbstractBuilder
 
         $this->addFragment($fragment);
 
-        $this->getDocument()->addUse('\\nabu\\data\\lang\\CNabuLanguage');
-        $this->getDocument()->addUse('\\nabu\\data\\lang\\CNabuLanguageList');
+        $this->getDocument()->addUse('\nabu\data\lang\CNabuLanguage');
+        $this->getDocument()->addUse('\nabu\data\lang\CNabuLanguageList');
     }
 
     private function prepareGetTreeData()
@@ -1395,7 +1483,7 @@ class CNabuPHPClassTableBuilder extends CNabuPHPClassTableAbstractBuilder
 
         $this->addFragment($fragment);
 
-        $this->getDocument()->addUse('\\nabu\\data\\lang\\CNabuLanguage');
+        $this->getDocument()->addUse('\nabu\data\lang\CNabuLanguage');
         $this->getDocument()->addUse('\\' . $subclass_namespace . '\\' . $subclass_name);
         $this->getDocument()->addUse('\\' . $subclass_namespace . '\\' . $subclass_name . 'List');
     }

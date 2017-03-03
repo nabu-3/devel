@@ -26,115 +26,57 @@ use nabu\db\interfaces\INabuDBDescriptor;
 /**
  * This class implements a lot of methods shared between different child classes.
  * @author Rafael Gutierrez <rgutierrez@wiscot.com>
- * @version 3.0.0 Surface
- * @package \nabu\nabu\sdk\builders\nabu
+ * @since 3.0.0 Surface
+ * @version 3.0.7 Surface
+ * @package \nabu\sdk\builders\nabu\base
  */
 class CNabuPHPClassTableAbstractBuilder extends CNabuPHPClassBuilder
 {
-    /**
-     * Entity Name used for comment purposes.
-     * @var string
-     */
+    /** @var string $entity_name Entity Name used for comment purposes. */
     protected $entity_name = null;
-    /**
-     * Class Namespace.
-     * @var string
-     */
+    /** @var string $class_namespace Class Namespace. */
     protected $class_namespace = null;
-    /**
-     * Name of the table.
-     * @var string
-     */
+    /** @var string $table_name Name of the table. */
     protected $table_name = null;
-    /**
-     * Flag to determine if entity have translations.
-     * @var bool
-     */
+    /** @var bool $is_translated Flag to determine if entity have translations. */
     protected $is_translated = false;
-    /**
-     * Flag to determine if entity are translations.
-     * @var bool
-     */
+    /** @var bool $is_translation Flag to determine if entity are translations. */
     protected $is_translation = false;
-    /**
-     * Flag to determine if entity is a Customer child entity.
-     * @var bool
-     */
+    /** @var bool $is_customer_child Flag to determine if entity is a Customer child entity. */
     protected $is_customer_child = false;
-    /**
-     * Flag to determine if entity is a Customer foreign entity.
-     * @var bool
-     */
+    /** @var bool $is_customer_foreign Flag to determine if entity is a Customer foreign entity. */
     protected $is_customer_foreign = false;
-    /**
-     * Flag to determine if entity is a Site child entity.
-     * @var bool
-     */
+    /** @var bool $is_site_child Flag to determine if entity is a Site child entity. */
     protected $is_site_child = false;
-    /**
-     * Flag to determine if entity s a Site foreign entity.
-     * @var bool
-     */
+    /** @var bool $is_site_foreign Flag to determine if entity is a Site foreign entity. */
     protected $is_site_foreign = false;
-    /**
-     * Flag to determine if is a Site Target child entity.
-     * @var bool
-     */
+    /** @var bool $is_site_target_child Flag to determine if is a Site Target child entity. */
     protected $is_site_target_child = false;
-    /**
-     * Flag to determine if is a Site Target foreign entity.
-     * @var bool
-     */
+    /** @var bool $is_site_target_foreign Flag to determine if is a Site Target foreign entity. */
     protected $is_site_target_foreign = false;
-    /**
-     * Flag to determine if is a Commerce child entity.
-     * @var bool
-     */
+    /** @var bool $is_commerce_child Flag to determine if is a Commerce child entity. */
     protected $is_commerce_child = false;
-    /**
-     * Flag to determine if is a Commerce foreign entity.
-     * @var bool
-     */
+    /** @var bool $is_commerce_foreign Flag to determine if is a Commerce foreign entity. */
     protected $is_commerce_foreign = false;
-    /**
-     * Flag to determine if is a Catalog child entity.
-     * @var bool
-     */
+    /** @var bool $is_catalog_child Flag to determine if is a Catalog child entity. */
     protected $is_catalog_child = false;
-    /**
-     * Flag to determine if is a Catalog foreign entity.
-     * @var bool
-     */
+    /** @var bool $is_catalog_foreign Flag to determine if is a Catalog foreign entity. */
     protected $is_catalog_foreign = false;
-    /**
-     * Flag to determine if is a Medioteca child entity.
-     * @var bool
-     */
+    /** @var bool $is_medioteca_child Flag to determine if is a Medioteca child entity. */
     protected $is_medioteca_child = false;
-    /**
-     * Flag to determine if is a Medioteca foreign entity.
-     * @var bool
-     */
+    /** @var bool $is_medioteca_foreign Flag to determine if is a Medioteca foreign entity. */
     protected $is_medioteca_foreign = false;
-    /**
-     * Flag to determine if is a Role child entity.
-     * @var bool
-     */
+    /** @var bool $is_messaging_child Flag to determine if entity is a Messaging child entity. */
+    protected $is_messaging_child = false;
+    /** @var bool $is_messaging_foreign Flat to determine if entity is a Messaging foreign entity. */
+    protected $is_messaging_foreign = false;
+    /** @var bool $is_role_child Flag to determine if is a Role child entity. */
     protected $is_role_child = false;
-    /**
-     * Flag to determine if is a Role foreign entity.
-     * @var bool
-     */
+    /** @var bool $is_role_foreign Flag to determine if is a Role foreign entity. */
     protected $is_role_foreign = false;
-    /**
-     * Dictionary for table to entity conversion names.
-     * @var array
-     */
+    /** @var array $dictionary Dictionary for table to entity conversion names. */
     protected $dictionary = false;
-    /**
-     * Table descriptor in array raw format.
-     * @var INabuDBDescriptor
-     */
+    /** @var INabuDBDescriptor $table_descriptor Table descriptor in array raw format. */
     private $table_descriptor = null;
 
     /**
@@ -199,6 +141,8 @@ class CNabuPHPClassTableAbstractBuilder extends CNabuPHPClassBuilder
         error_log($padding . "Site Target Foreign: " . ($this->is_site_target_foreign ? 'YES' : 'NO'));
         error_log($padding . "Medioteca Child: " . ($this->is_medioteca_child ? 'YES' : 'NO'));
         error_log($padding . "Medioteca Foreign: " . ($this->is_medioteca_foreign ? 'YES' : 'NO'));
+        error_log($padding . "Messaging Child: " . ($this->is_messaging_child ? 'YES' : 'NO'));
+        error_log($padding . "Messaging Foreign: " . ($this->is_messaging_foreign ? 'YES' : 'NO'));
         error_log($padding . "Role Child: " . ($this->is_role_child ? 'YES' : 'NO'));
         error_log($padding . "Role Foreign: " . ($this->is_role_foreign ? 'YES' : 'NO'));
     }
@@ -267,6 +211,8 @@ class CNabuPHPClassTableAbstractBuilder extends CNabuPHPClassBuilder
                     $this->checkPrimaryRelationship(NABU_SITE_TARGET_TABLE, NABU_SITE_TARGET_FIELD_ID);
                 $this->is_medioteca_child =
                     $this->checkPrimaryRelationship(NABU_MEDIOTECA_TABLE, NABU_MEDIOTECA_FIELD_ID);
+                $this->is_messaging_child =
+                    $this->checkPrimaryRelationship(NABU_MESSAGING_TABLE, NABU_MESSAGING_FIELD_ID);
                 $this->is_role_child =
                     $this->checkPrimaryRelationship(NABU_ROLE_TABLE, NABU_ROLE_FIELD_ID);
             }
@@ -304,6 +250,7 @@ class CNabuPHPClassTableAbstractBuilder extends CNabuPHPClassBuilder
             NABU_SITE_TARGET_TABLE, NABU_SITE_TARGET_FIELD_ID
         );
         $this->is_medioteca_foreign = $this->checkSecondaryRelationship(NABU_MEDIOTECA_TABLE, NABU_MEDIOTECA_FIELD_ID);
+        $this->is_messaging_foreign = $this->checkSecondaryRelationship(NABU_MESSAGING_TABLE, NABU_MESSAGING_FIELD_ID);
         $this->is_role_foreign = $this->checkSecondaryRelationship(NABU_ROLE_TABLE, NABU_ROLE_FIELD_ID);
     }
 
