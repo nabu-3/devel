@@ -824,7 +824,7 @@ class CNabuPHPClassTableBuilder extends CNabuPHPClassTableAbstractBuilder
             $this->addFragment($fragment);
 
             $is_enclosed = $this->is_customer_foreign || $this->is_site_foreign || $this->is_medioteca_foreign ||
-                           $this->is_commerce_foreign || $this->is_catalog_foreign
+                           $this->is_commerce_foreign || $this->is_catalog_foreign || $this->is_messaging_foreign
             ;
 
             if ($this->is_customer_foreign) {
