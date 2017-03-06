@@ -1172,6 +1172,7 @@ class CNabuPHPClassTableBuilder extends CNabuPHPClassTableAbstractBuilder
             if ($this->is_customer_child || $this->is_customer_foreign) {
                 $this->prepareGetCustomerUsedLanguages($lang_namespace, $lang_class);
             }
+            $this->prepareRefresh();
         }
     }
 
@@ -1440,6 +1441,18 @@ class CNabuPHPClassTableBuilder extends CNabuPHPClassTableAbstractBuilder
                 '',
                 'return $trdata;'
             ));
+
+            $this->addFragment($fragment);
+        }
+    }
+
+    private function prepareRefresh()
+    {
+        if ($this->have_lang) {
+            $fragment = new CNabuPHPMethodBuilder($this, 'refresh');
+            $fragment->addComment('Overrides refresh method to add translations branch to refresh.');
+            $fragment->addComment('@return bool Returns true if transations are empty or refreshed.');
+            $fragment->addFragment('return parent::refresh() && $this->appendTranslatedRefresh();');
 
             $this->addFragment($fragment);
         }
