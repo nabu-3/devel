@@ -35,7 +35,7 @@ use nabu\db\interfaces\INabuDBSyntaxBuilder;
  * that your table changes or when Nabu will increase the set of methods.
  * @author Rafael Gutierrez <rgutierrez@wiscot.com>
  * @since 3.0.0 Surface
- * @version 3.0.7 Surface
+ * @version 3.0.8 Surface
  * @package \nabu\sdk\builders\nabu
  */
 class CNabuPHPClassTableBuilder extends CNabuPHPClassTableAbstractBuilder
