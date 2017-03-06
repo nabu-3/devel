@@ -441,10 +441,10 @@ createEntity(
     $dictionary
 );
 createEntity(
-    'nb_messaging_account',
+    'nb_messaging_service',
     'nabu\data\messaging\base',
-    'CNabuMessagingAccountBase',
-    'Messaging Account',
+    'CNabuMessagingServiceBase',
+    'Messaging Service',
     true,
     $dictionary
 );
