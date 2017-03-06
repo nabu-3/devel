@@ -545,6 +545,10 @@ class CNabuPHPClassTableBuilder extends CNabuPHPClassTableAbstractBuilder
             $keys = $table_descriptor->getPrimaryConstraintFieldNames();
             $key = array_shift($keys);
             $func_name = 'getAll' . str_replace(' ', '', $this->entity_name) . 's';
+            $func_name = preg_replace('/ys$/', 'ies', $func_name);
+            $subclass_name = preg_replace('/Base$/', '', $this->name);
+            $subclass_namespace = preg_replace('/\\\\base$/', '', $this->class_namespace);
+
 
             $fragment = new CNabuPHPMethodBuilder($this, $func_name, CNabuPHPMethodBuilder::FUNCTION_PUBLIC, true);
             $fragment->addComment(
@@ -554,6 +558,7 @@ class CNabuPHPClassTableBuilder extends CNabuPHPClassTableAbstractBuilder
 
             if ($this->is_customer_child || $this->is_customer_foreign) {
                 $this->getDocument()->addUse('\nabu\data\customer\CNabuCustomer');
+                $this->getDocument()->addUse('\\' . $subclass_namespace . '\\' . $subclass_name . 'List');
                 $fragment->addParam(
                     NABU_CUSTOMER_TABLE, 'CNabuCustomer', false, false,
                     'CNabuCustomer', "The CNabuCustomer instance of the Customer that owns the $this->entity_name List."
@@ -578,13 +583,14 @@ class CNabuPHPClassTableBuilder extends CNabuPHPClassTableAbstractBuilder
                     "        \$" . NABU_CUSTOMER_TABLE,
                     "    );",
                     "} else {",
-                    "    \$retval = new " . $this->name . "List();",
+                    "    \$retval = new " . $subclass_name . "List();",
                     "}",
                     "",
                     "return \$retval;"
                 ));
             } elseif ($this->is_site_child || $this->is_site_foreign) {
                 $this->getDocument()->addUse('\nabu\data\site\CNabuSite');
+                $this->getDocument()->addUse('\\' . $subclass_namespace . '\\' . $subclass_name . 'List');
                 $fragment->addParam(
                     NABU_SITE_TABLE, 'CNabuSite', false, false,
                     'CNabuSite', "The CNabuSite instance of the Site that owns the $this->entity_name List."
@@ -609,13 +615,14 @@ class CNabuPHPClassTableBuilder extends CNabuPHPClassTableAbstractBuilder
                     "        \$" . NABU_SITE_TABLE,
                     "    );",
                     "} else {",
-                    "    \$retval = new " . $this->name . "List();",
+                    "    \$retval = new " . $subclass_name . "List();",
                     "}",
                     "",
                     "return \$retval;"
                 ));
             } elseif ($this->is_commerce_child || $this->is_commerce_foreign) {
                 $this->getDocument()->addUse('\nabu\data\commerce\CNabuCommerce');
+                $this->getDocument()->addUse('\\' . $subclass_namespace . '\\' . $subclass_name . 'List');
                 $fragment->addParam(
                     NABU_COMMERCE_TABLE, 'CNabuCommerce', false, false,
                     'CNabuCommerce', "The CNabuCommerce instance of the Commerce that owns the $this->entity_name List."
@@ -640,13 +647,14 @@ class CNabuPHPClassTableBuilder extends CNabuPHPClassTableAbstractBuilder
                     "        \$" . NABU_COMMERCE_TABLE,
                     "    );",
                     "} else {",
-                    "    \$retval = new " . $this->name . "List();",
+                    "    \$retval = new " . $subclass_name . "List();",
                     "}",
                     "",
                     "return \$retval;"
                 ));
             } elseif ($this->is_catalog_child || $this->is_catalog_foreign) {
                 $this->getDocument()->addUse('\nabu\data\catalog\CNabuCatalog');
+                $this->getDocument()->addUse('\\' . $subclass_namespace . '\\' . $subclass_name . 'List');
                 $fragment->addParam(
                     NABU_CATALOG_TABLE, 'CNabuCatalog', false, false,
                     'CNabuCatalog', "The CNabuCatalog instance of the Catalog that owns the $this->entity_name List."
@@ -671,13 +679,14 @@ class CNabuPHPClassTableBuilder extends CNabuPHPClassTableAbstractBuilder
                     "        \$" . NABU_CATALOG_TABLE,
                     "    );",
                     "} else {",
-                    "    \$retval = new " . $this->name . "List();",
+                    "    \$retval = new " . $subclass_name . "List();",
                     "}",
                     "",
                     "return \$retval;"
                 ));
             } elseif ($this->is_medioteca_child || $this->is_medioteca_foreign) {
                 $this->getDocument()->addUse('\nabu\data\medioteca\CNabuMedioteca');
+                $this->getDocument()->addUse('\\' . $subclass_namespace . '\\' . $subclass_name . 'List');
                 $fragment->addParam(
                     NABU_MEDIOTECA_TABLE, 'CNabuMedioteca', false, false,
                     'CNabuMedioteca', "The CNabuMedioteca instance of the Medioteca that owns the $this->entity_name List."
@@ -702,13 +711,14 @@ class CNabuPHPClassTableBuilder extends CNabuPHPClassTableAbstractBuilder
                     "        \$" . NABU_MEDIOTECA_TABLE,
                     "    );",
                     "} else {",
-                    "    \$retval = new " . $this->name . "List();",
+                    "    \$retval = new " . $subclass_name . "List();",
                     "}",
                     "",
                     "return \$retval;"
                 ));
             } elseif ($this->is_messaging_child || $this->is_messaging_foreign) {
                 $this->getDocument()->addUse('\nabu\data\messaging\CNabuMessaging');
+                $this->getDocument()->addUse('\\' . $subclass_namespace . '\\' . $subclass_name . 'List');
                 $fragment->addParam(
                     NABU_MESSAGING_TABLE, 'CNabuMessaging', false, false,
                     'CNabuMessaging', "The CNabuMessaging instance of the Messagin that owns the $this->entity_name List"
@@ -733,7 +743,7 @@ class CNabuPHPClassTableBuilder extends CNabuPHPClassTableAbstractBuilder
                     "        \$" . NABU_MESSAGING_TABLE,
                     "    );",
                     "} else {",
-                    "    \$retval = new " . $this->name . "List();",
+                    "    \$retval = new " . $subclass_name . "List();",
                     "}",
                     "",
                     "return \$retval;"
