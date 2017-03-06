@@ -578,7 +578,7 @@ class CNabuPHPClassTableBuilder extends CNabuPHPClassTableAbstractBuilder
                     "        \$" . NABU_CUSTOMER_TABLE,
                     "    );",
                     "} else {",
-                    "    \$retval = null;",
+                    "    \$retval = new " . $this->name . "List();",
                     "}",
                     "",
                     "return \$retval;"
@@ -609,7 +609,7 @@ class CNabuPHPClassTableBuilder extends CNabuPHPClassTableAbstractBuilder
                     "        \$" . NABU_SITE_TABLE,
                     "    );",
                     "} else {",
-                    "    \$retval = null;",
+                    "    \$retval = new " . $this->name . "List();",
                     "}",
                     "",
                     "return \$retval;"
@@ -640,7 +640,7 @@ class CNabuPHPClassTableBuilder extends CNabuPHPClassTableAbstractBuilder
                     "        \$" . NABU_COMMERCE_TABLE,
                     "    );",
                     "} else {",
-                    "    \$retval = null;",
+                    "    \$retval = new " . $this->name . "List();",
                     "}",
                     "",
                     "return \$retval;"
@@ -671,7 +671,7 @@ class CNabuPHPClassTableBuilder extends CNabuPHPClassTableAbstractBuilder
                     "        \$" . NABU_CATALOG_TABLE,
                     "    );",
                     "} else {",
-                    "    \$retval = null;",
+                    "    \$retval = new " . $this->name . "List();",
                     "}",
                     "",
                     "return \$retval;"
@@ -702,7 +702,7 @@ class CNabuPHPClassTableBuilder extends CNabuPHPClassTableAbstractBuilder
                     "        \$" . NABU_MEDIOTECA_TABLE,
                     "    );",
                     "} else {",
-                    "    \$retval = null;",
+                    "    \$retval = new " . $this->name . "List();",
                     "}",
                     "",
                     "return \$retval;"
@@ -733,7 +733,7 @@ class CNabuPHPClassTableBuilder extends CNabuPHPClassTableAbstractBuilder
                     "        \$" . NABU_MESSAGING_TABLE,
                     "    );",
                     "} else {",
-                    "    \$retval = null;",
+                    "    \$retval = new " . $this->name . "List();",
                     "}",
                     "",
                     "return \$retval;"
