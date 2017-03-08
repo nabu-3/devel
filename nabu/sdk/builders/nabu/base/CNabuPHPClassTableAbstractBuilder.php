@@ -70,6 +70,10 @@ class CNabuPHPClassTableAbstractBuilder extends CNabuPHPClassBuilder
     protected $is_messaging_child = false;
     /** @var bool $is_messaging_foreign Flat to determine if entity is a Messaging foreign entity. */
     protected $is_messaging_foreign = false;
+    /** @var bool $is_messaging_service_child Flag to determine if entity is a Messaging Service child entity. */
+    protected $is_messaging_service_child = false;
+    /** @var bool $is_messaging_service_foreign Flag to determine if entity is a Messaging Service foreign entity. */
+    protected $is_messaging_service_foreign = false;
     /** @var bool $is_role_child Flag to determine if is a Role child entity. */
     protected $is_role_child = false;
     /** @var bool $is_role_foreign Flag to determine if is a Role foreign entity. */
@@ -143,6 +147,8 @@ class CNabuPHPClassTableAbstractBuilder extends CNabuPHPClassBuilder
         error_log($padding . "Medioteca Foreign: " . ($this->is_medioteca_foreign ? 'YES' : 'NO'));
         error_log($padding . "Messaging Child: " . ($this->is_messaging_child ? 'YES' : 'NO'));
         error_log($padding . "Messaging Foreign: " . ($this->is_messaging_foreign ? 'YES' : 'NO'));
+        error_log($padding . "Messaging Service Child: " . ($this->is_messaging_service_child ? 'YES' : 'NO'));
+        error_log($padding . "Messaging Service Foreign: " . ($this->is_messaging_service_foreign ? 'YES' : 'NO'));
         error_log($padding . "Role Child: " . ($this->is_role_child ? 'YES' : 'NO'));
         error_log($padding . "Role Foreign: " . ($this->is_role_foreign ? 'YES' : 'NO'));
     }
@@ -213,6 +219,8 @@ class CNabuPHPClassTableAbstractBuilder extends CNabuPHPClassBuilder
                     $this->checkPrimaryRelationship(NABU_MEDIOTECA_TABLE, NABU_MEDIOTECA_FIELD_ID);
                 $this->is_messaging_child =
                     $this->checkPrimaryRelationship(NABU_MESSAGING_TABLE, NABU_MESSAGING_FIELD_ID);
+                $this->is_messaging_service_child =
+                    $this->checkPrimaryRelationship(NABU_MESSAGING_SERVICE_TABLE, NABU_MESSAGING_SERVICE_FIELD_ID);
                 $this->is_role_child =
                     $this->checkPrimaryRelationship(NABU_ROLE_TABLE, NABU_ROLE_FIELD_ID);
             }
@@ -251,6 +259,9 @@ class CNabuPHPClassTableAbstractBuilder extends CNabuPHPClassBuilder
         );
         $this->is_medioteca_foreign = $this->checkSecondaryRelationship(NABU_MEDIOTECA_TABLE, NABU_MEDIOTECA_FIELD_ID);
         $this->is_messaging_foreign = $this->checkSecondaryRelationship(NABU_MESSAGING_TABLE, NABU_MESSAGING_FIELD_ID);
+        $this->is_messaging_service_foreign = $this->checkSecondaryRelationship(
+            NABU_MESSAGING_SERVICE_TABLE, NABU_MESSAGING_SERVICE_FIELD_ID
+        );
         $this->is_role_foreign = $this->checkSecondaryRelationship(NABU_ROLE_TABLE, NABU_ROLE_FIELD_ID);
     }
 

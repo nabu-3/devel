@@ -448,3 +448,35 @@ createEntity(
     true,
     $dictionary
 );
+createEntity(
+    'nb_messaging_template',
+    'nabu\data\messaging\base',
+    'CNabuMessagingTemplateBase',
+    'Messaging Template',
+    true,
+    $dictionary
+);
+createEntity(
+    'nb_messaging_service_template',
+    'nabu\data\messaging\base',
+    'CNabuMessagingServiceTemplateBase',
+    'Messaging Service Template',
+    true,
+    $dictionary
+);
+createEntity(
+    'nb_messaging_service_stack',
+    'nabu\data\messaging\base',
+    'CNabuMessagingServiceStackBase',
+    'Messaging Service Stack',
+    true,
+    $dictionary
+);
+createEntity(
+    'nb_messaging_service_stack_attachment',
+    'nabu\data\messaging\base',
+    'CNabuMessagingServiceStackAttachmentBase',
+    'Messaging Service Stack Attachment',
+    true,
+    $dictionary
+);
