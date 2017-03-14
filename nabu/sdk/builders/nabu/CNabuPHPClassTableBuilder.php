@@ -1471,43 +1471,6 @@ class CNabuPHPClassTableBuilder extends CNabuPHPClassTableAbstractBuilder
         $this->getDocument()->addUse('\\' . $lang_namespace . '\\builtin\\' . $builtin_class);
     }
 
-    private function prepareGetLanguagesForTraslatedObject($translated_table, $translated_namespace, $translated_class)
-    {
-        $output = $this->buildBodyForTranslatedObjectMethods(
-                $translated_table,
-                $translated_namespace,
-                $translated_class,
-                'CNabuLanguage',
-                false
-        );
-
-        $fragment = new CNabuPHPMethodBuilder(
-                $this,
-                'getLanguagesForTranslatedObject',
-                CNabuPHPMethodBuilder::FUNCTION_PUBLIC,
-                true
-        );
-        $fragment->addComment(
-                'Query the storage to retrieve the full list of available languages (those that '
-              . 'correspond to existent translations) for $translated and returns an associative '
-              . 'array in which each one is of class \nabu\data\lang\CNabuLanguage.'
-        );
-        $fragment->addComment(
-                '@return false|null|array Returns an associative array indexed by the language Id, '
-              . 'null if no languages are available, or false if $translated cannot be identified.'
-        );
-        $fragment->addParam(
-                'translated', null, false, false, 'object',
-                'Translated object to retrieve languages'
-        );
-        $fragment->addFragment($output);
-
-        $this->addFragment($fragment);
-
-        $this->getDocument()->addUse('\nabu\data\lang\CNabuLanguage');
-        $this->getDocument()->addUse('\nabu\data\lang\CNabuLanguageList');
-    }
-
     private function prepareGetTreeData()
     {
         if ($this->have_attributes || $this->have_lang) {
@@ -1551,6 +1514,42 @@ class CNabuPHPClassTableBuilder extends CNabuPHPClassTableAbstractBuilder
         }
     }
 
+    private function prepareGetLanguagesForTraslatedObject($translated_table, $translated_namespace, $translated_class)
+    {
+        $output = $this->buildBodyForTranslatedObjectMethods(
+                $translated_table,
+                $translated_namespace,
+                $translated_class,
+                'CNabuLanguage',
+                false
+        );
+
+        $fragment = new CNabuPHPMethodBuilder(
+                $this,
+                'getLanguagesForTranslatedObject',
+                CNabuPHPMethodBuilder::FUNCTION_PUBLIC,
+                true
+        );
+        $fragment->addComment(
+                'Query the storage to retrieve the full list of available languages (those that '
+              . 'correspond to existent translations) for $translated and returns a list with all languages.'
+        );
+        $fragment->addComment(
+                '@return CNabuLanguageList Returns a list of languages. If no languages are available, '
+              . 'the list is empty.'
+        );
+        $fragment->addParam(
+                'translated', null, false, false, 'mixed',
+                'Translated object or Id to retrieve languages.'
+        );
+        $fragment->addFragment($output);
+
+        $this->addFragment($fragment);
+
+        $this->getDocument()->addUse('\nabu\data\lang\CNabuLanguage');
+        $this->getDocument()->addUse('\nabu\data\lang\CNabuLanguageList');
+    }
+
     private function prepareGetTranslationsForTraslatedObject(
         $translated_table,
         $translated_namespace,
@@ -1574,16 +1573,15 @@ class CNabuPHPClassTableBuilder extends CNabuPHPClassTableAbstractBuilder
         );
         $fragment->addComment(
                 "Query the storage to retrieve the full list of available translations for "
-              . "\$translated and returns an associative array in which each one is of class "
-              . "\\$subclass_namespace\\$subclass_name."
+              . "\$translated and returns a list with all translations."
         );
         $fragment->addComment(
-                '@return false|null|array Returns an associative array indexed by the language Id, '
-              . 'null if no languages are available, or false if $translated cannot be identified.'
+                "@return $subclass_name" . 'List Returns a list of translations. If no translations are available, '
+              . 'the list is empty.'
         );
         $fragment->addParam(
-                'translated', null, false, false, 'object',
-                'Translated object to retrieve translations'
+                'translated', null, false, false, 'mixed',
+                'Translated object or Id to retrieve translations.'
         );
         $fragment->addFragment($output);
 
@@ -1604,11 +1602,7 @@ class CNabuPHPClassTableBuilder extends CNabuPHPClassTableAbstractBuilder
         $primary = $this->translated_desc->getPrimaryConstraintFieldNames();
 
         foreach ($primary as $key_field) {
-            $output[] = "\$$key_field = nb_getMixedValue(";
-            $output[] = "        \$translated,";
-            $output[] = "        '$key_field',";
-            $output[] = "        '\\\\" . str_replace('\\', '\\\\', $translated_namespace) . "\\\\$translated_class'";
-            $output[] = ");";
+            $output[] = "\$$key_field = nb_getMixedValue(\$translated, '$key_field');";
         }
 
         $c = count($primary);
