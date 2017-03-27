@@ -480,3 +480,21 @@ createEntity(
     true,
     $dictionary
 );
+
+// Project: nabu\data\project\base
+createEntity(
+    'nb_project',
+    'nabu\data\project\base',
+    'CNabuProjectBase',
+    'Project',
+    true,
+    $dictionary
+);
+createEntity(
+    'nb_project_version',
+    'nabu\data\project\base',
+    'CNabuProjectVersionBase',
+    'Project Version',
+    true,
+    $dictionary
+);

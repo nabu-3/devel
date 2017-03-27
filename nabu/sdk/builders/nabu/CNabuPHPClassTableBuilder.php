@@ -176,6 +176,11 @@ class CNabuPHPClassTableBuilder extends CNabuPHPClassTableAbstractBuilder
             $this->addUse('TNabuMessagingServiceChild');
         }
 
+        if ($this->is_project_child || $this->is_project_foreign) {
+            $this->getDocument()->addUse('nabu\data\project\traits\TNabuProjectChild');
+            $this->addUse('TNabuProjectChild');
+        }
+
         if ($this->is_role_child || $this->is_role_foreign) {
             $this->getDocument()->adduse('\nabu\data\security\traits\TNabuRoleChild');
             $this->addUse('TNabuRoleChild');
@@ -785,7 +790,39 @@ class CNabuPHPClassTableBuilder extends CNabuPHPClassTableAbstractBuilder
                     "",
                     "return \$retval;"
                 ));
-            } else {
+            } elseif ($this->is_project_child || $this->is_project_foreign) {
+                $this->getDocument()->addUse('\nabu\data\project\CNabuProject');
+                $this->getDocument()->adduse('\\' . $subclass_namespace . '\\' . $subclass_name . 'List');
+                $fragment->addParam(
+                    NABU_PROJECT_TABLE, 'CNabuProject', false, false,
+                    'CNabuProject', "The CNabuProject instance that owns the $this->entity_name List"
+                );
+                $fragment->addFragment(array(
+                    "\$" . NABU_PROJECT_FIELD_ID
+                         . " = nb_getMixedValue(\$"
+                         . NABU_PROJECT_TABLE
+                         . ", '"
+                         . NABU_PROJECT_FIELD_ID
+                         . "');",
+                    "if (is_numeric(\$" . NABU_PROJECT_FIELD_ID . ")) {",
+                    "    \$retval = forward_static_call(",
+                    "    array(get_called_class(), 'buildObjectListFromSQL'),",
+                    "        '$key',",
+                    "        'select * '",
+                    "        . 'from $this->table '",
+                    "       . 'where " . NABU_PROJECT_FIELD_ID . "=%project_id\$d',",
+                    "        array(",
+                    "            'project_id' => \$" . NABU_PROJECT_FIELD_ID,
+                    "        ),",
+                    "        \%" . NABU_PROJECT_TABLE,
+                    "    );",
+                    "} else {".
+                    "    \$retval = new " . $subclass_name . "List();",
+                    "}",
+                    "",
+                    "return \$retval;"
+                ));
+            }else {
                 $fragment->addFragment(array(
                     "return forward_static_call(",
                     "        array(get_called_class(), 'buildObjectListFromSQL'),",
@@ -848,6 +885,12 @@ class CNabuPHPClassTableBuilder extends CNabuPHPClassTableAbstractBuilder
                     'mixed', 'Messaging Service instance, object containing a Messaging Service Id field or an Id.'
                 );
             }
+            if ($this->is_project_foreign) {
+                $fragment->addParam(
+                    'nb_project', null, true, null,
+                    'mixed', 'Project instance, object containing a Project Id field or an Id.'
+                );
+            }
             $fragment->addParam(
                 'q', null, true, null, 'string', 'Query string to filter results using a context index.'
             );
@@ -878,7 +921,7 @@ class CNabuPHPClassTableBuilder extends CNabuPHPClassTableAbstractBuilder
 
             $is_enclosed = $this->is_customer_foreign || $this->is_site_foreign || $this->is_medioteca_foreign ||
                            $this->is_commerce_foreign || $this->is_catalog_foreign || $this->is_messaging_foreign ||
-                           $this->is_messaging_service_foreign
+                           $this->is_messaging_service_foreign || $this->is_project_foreign
             ;
 
             if ($this->is_customer_foreign) {
@@ -916,6 +959,11 @@ class CNabuPHPClassTableBuilder extends CNabuPHPClassTableAbstractBuilder
                     '$' . NABU_MESSAGING_SERVICE_FIELD_ID . ' = nb_getMixedValue($nb_customer, NABU_MESSAGING_SERVICE_FIELD_ID);',
                     'if (is_numeric($' . NABU_MESSAGING_SERVICE_FIELD_ID . ')) {'
                 ));
+            } elseif ($this->is_project_foreign) {
+                $fragment->addFragment(array(
+                    '$' . NABU_PROJECT_FIELD_ID . ' = nb_getMixedValue($nb_customer, NABU_PROJECT_FIELD_ID);',
+                    'if (is_numeric($' . NABU_PROJECT_FIELD_ID . ')) {'
+                ));
             }
 
             $padding = ($is_enclosed ? '    ' : '');
@@ -948,6 +996,8 @@ class CNabuPHPClassTableBuilder extends CNabuPHPClassTableAbstractBuilder
                 $fragment->addFragment($padding . "   . 'where ' . NABU_MESSAGING_FIELD_ID . '=%messaging_id\$d '");
             } elseif ($this->is_messaging_service_foreign) {
                 $fragment->addFragment($padding . "   . 'where ' . NABU_MESSAGING_SERVICE_FIELD_ID . '=%messaging_service_id\$d '");
+            } elseif ($this->is_project_foreign) {
+                $fragment->addFragment($padding . "   . 'where ' . NABU_PROJECT_FIELD_ID . '=%project_id\$d '");
             }
             $fragment->addFragment(array(
                 $padding . '    . ($order_part ? "order by $order_part " : \'\')',
@@ -968,6 +1018,8 @@ class CNabuPHPClassTableBuilder extends CNabuPHPClassTableAbstractBuilder
                 $fragment->addFragment($padding . '        \'messaging_id\' => $' . NABU_MESSAGING_FIELD_ID);
             } elseif ($this->is_messaging_service_foreign) {
                 $fragment->addFragment($padding . '        \'messaging_service_id\' => $' . NABU_MESSAGING_SERVICE_FIELD_ID);
+            } elseif ($this->is_project_foreign) {
+                $fragment->addFragment($padding . '        \'project_id\' => $' . NABU_PROJECT_FIELD_ID);
             }
             $fragment->addFragment(array(
                 $padding . '    )',
@@ -1048,6 +1100,11 @@ class CNabuPHPClassTableBuilder extends CNabuPHPClassTableAbstractBuilder
                 $fragment->addParam(
                     NABU_MESSAGING_SERVICE_TABLE, null, false, false,
                     'mixed', "Messaging Service that owns $this->entity_name"
+                );
+            } elseif ($this->is_project_child || $this->is_project_foreign) {
+                $fragment->addParam(
+                    NABU_PROJECT_TABLE, null, false, false,
+                    'mixed', "Project that owns $this->entity_name"
                 );
             }
             $fragment->addParam('key', null, false, false, 'string', 'Key to search');
@@ -1218,6 +1275,31 @@ class CNabuPHPClassTableBuilder extends CNabuPHPClassTableAbstractBuilder
                     "             . \"and $key_name='%key\\\$s'\",",
                     "            array(",
                     "                'messaging_service_id' => \$" . NABU_MESSAGING_SERVICE_FIELD_ID . ",",
+                    "                'key' => \$key",
+                    "            )",
+                    "    );",
+                    "} else {",
+                    "    \$retval = null;",
+                    "}",
+                    "",
+                    "return \$retval;"
+                ));
+            } elseif ($this->is_project_child || $this->is_project_foreign) {
+                $fragment->addFragment(array(
+                    "\$" . NABU_PROJECT_FIELD_ID
+                         . " = nb_getMixedValue(\$"
+                         . NABU_PROJECT_TABLE
+                         . ", '"
+                         . NABU_PROJECT_FIELD_ID
+                         . "');",
+                    "if (is_numeric(\$" . NABU_PROJECT_FIELD_ID . ")) {",
+                    "    \$RETVAL = $keyed_class::buildObjectFromSQL(",
+                    "            'select * '",
+                    "              'from $this->table '",
+                    "           . 'where " . NABU_PROJECT_FIELD_ID . "=%project_id\$d '",
+                    "             . \"and $key_name='%key\\\$s'\",",
+                    "            array(",
+                    "                'project_id' => \$" . NABU_PROJECT_FIELD_ID . ",",
                     "                'key' => \$key",
                     "            )",
                     "    );",
