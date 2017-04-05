@@ -1595,7 +1595,15 @@ class CNabuPHPClassTableBuilder extends CNabuPHPClassTableAbstractBuilder
             $fragment = new CNabuPHPMethodBuilder($this, 'refresh');
             $fragment->addComment('Overrides refresh method to add translations branch to refresh.');
             $fragment->addComment('@return bool Returns true if transations are empty or refreshed.');
-            $fragment->addFragment('return parent::refresh() && $this->appendTranslatedRefresh();');
+            $fragment->addParam(
+                'force', 'bool', true, false,
+                'bool', 'Forces to reload entities from the database storage.'
+            );
+            $fragment->addParam(
+                'cascade', 'bool', true, false,
+                'bool', 'Forces to reload child entities from the database storage.'
+            );
+            $fragment->addFragment('return parent::refresh($force, $cascade) && $this->appendTranslatedRefresh($force);');
 
             $this->addFragment($fragment);
         }
