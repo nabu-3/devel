@@ -35,7 +35,7 @@ class CNabuTextBuilder extends CNabuAbstractBuilder
     public function __construct($text = null)
     {
         parent::__construct();
-        
+
         if (strlen($text) > 0) {
             $this->addFragment($text);
         }
@@ -43,7 +43,7 @@ class CNabuTextBuilder extends CNabuAbstractBuilder
 
     /**
      * Overrides parent method to return an empty string
-     * @param type $padding This parameter is ignored in this implementation
+     * @param string $padding This parameter is ignored in this implementation
      * @return string Returns an empty ('') string
      */
     protected function getComments($padding = '')
@@ -53,7 +53,7 @@ class CNabuTextBuilder extends CNabuAbstractBuilder
 
     /**
      * Overrides parent method to return an empty string
-     * @param type $padding This parameter is ignored in this implementation
+     * @param string $padding This parameter is ignored in this implementation
      * @return string Returns an empty ('') string
      */
     protected function getDescriptor()
@@ -63,7 +63,7 @@ class CNabuTextBuilder extends CNabuAbstractBuilder
 
     /**
      * Overrides parent method to return an empty string
-     * @param type $padding This parameter is ignored in this implementation
+     * @param string $padding This parameter is ignored in this implementation
      * @return string Returns an empty ('') string
      */
     protected function getFooter($padding = '')
@@ -73,7 +73,7 @@ class CNabuTextBuilder extends CNabuAbstractBuilder
 
     /**
      * Overrides parent method to return an empty string
-     * @param type $padding This parameter is ignored in this implementation
+     * @param string $padding This parameter is ignored in this implementation
      * @return string Returns an empty ('') string
      */
     protected function getHeader($padding = '')
@@ -83,7 +83,7 @@ class CNabuTextBuilder extends CNabuAbstractBuilder
 
     /**
      * Overrides parent method to return an empty string
-     * @param type $padding This parameter is ignored in this implementation
+     * @param string $padding This parameter is ignored in this implementation
      * @return string Returns an empty ('') string
      */
     protected function getLicense($padding = '')
