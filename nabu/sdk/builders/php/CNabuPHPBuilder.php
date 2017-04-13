@@ -30,29 +30,23 @@ use \nabu\sdk\builders\php\traits\TNabuPHPCommentsBuilder;
 class CNabuPHPBuilder extends CNabuAbstractBuilder
 {
     use TNabuPHPCommentsBuilder;
-    
-    /**
-     * Namespace of the file. If not required can be empty.
-     * @param string $ns
-     */
+
+    /** @var string $ns Namespace of the file. If not required can be empty. */
     protected $ns;
-    /**
-     * Array with all used class / interfaces / traits.
-     * @var array
-     */
+    /** @var array $use_list Array with all used class / interfaces / traits. */
     protected $use_list = array();
 
     /**
-     * Creates an instance of this class
+     * Creates an instance of this class.
      * @param string $ns Namespace for this PHP content
      */
     public function __construct($ns = false)
     {
         parent::__construct();
-        
+
         $this->ns = $ns;
     }
-    
+
     /**
      * Get the namespace assigned for this instance
      * @return string Returns the namespace
@@ -61,7 +55,7 @@ class CNabuPHPBuilder extends CNabuAbstractBuilder
     {
         return $this->ns;
     }
-    
+
     /**
      * Overrides parent method to return the open paragraph of PHP
      * @return string Returns the descriptor init sequence
@@ -70,7 +64,7 @@ class CNabuPHPBuilder extends CNabuAbstractBuilder
     {
         return "<?php\n";
     }
-    
+
     /**
      * Overrides parent method to return the file license as a PHP comment
      * @param string $padding Padding to place at the beginning of each line
@@ -87,16 +81,16 @@ class CNabuPHPBuilder extends CNabuAbstractBuilder
              . nb_apacheLicense($padding . ' * ')
              . "$padding */\n\n";
     }
-    
+
     /**
      * Overrides parent method to return the header of the file
-     * @param type $padding Padding to place at the beginning of each line
+     * @param string $padding Padding to place at the beginning of each line
      * @return string Returns the header as a string
      */
     protected function getHeader($padding = '')
     {
         $content = (strlen($this->ns) > 0 ? $padding . "namespace $this->ns;\n\n" : '');
-        
+
         if (count($this->use_list) > 0) {
             sort($this->use_list, SORT_STRING | SORT_FLAG_CASE);
             foreach ($this->use_list as $used) {
@@ -104,20 +98,20 @@ class CNabuPHPBuilder extends CNabuAbstractBuilder
             }
             $content .= "\n";
         }
-        
+
         return $content;
     }
-    
+
     /**
      * Overrides the parent method to return an empty string as footer ('')
-     * @param type $padding
+     * @param string $padding
      * @return string Returns an empty ('') string
      */
     protected function getFooter($padding = '')
     {
         return '';
     }
-    
+
     /**
      * Gets the list of PHP use clauses included in this entity
      * @return array Returns an array with a list of PHP use clauses
@@ -126,11 +120,11 @@ class CNabuPHPBuilder extends CNabuAbstractBuilder
     {
         return $this->use_list;
     }
-    
+
     /**
      * Add a new use clause to this instance. If use clause already exists then the action is ignored.
-     * @param type $used Object path and name to be used
-     * @return boolean Returns true if $used is added or false if already exists
+     * @param string $used Object path and name to be used
+     * @return bool Returns true if $used is added or false if already exists
      */
     public function addUse($used)
     {
@@ -139,7 +133,7 @@ class CNabuPHPBuilder extends CNabuAbstractBuilder
             $this->use_list[] = $used;
             $retval = true;
         }
-        
+
         return $retval;
     }
 }
