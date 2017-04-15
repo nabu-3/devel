@@ -103,6 +103,8 @@ class CNabuXMLBuilder extends CNabuAbstractBuilder
             }
         }
 
-        return $root->asXML();
+        $str = $root->asXML();
+        
+        return ($str === false ? '' : str_replace(array('&lt;![CDATA[', ']]&gt;'), array('<![CDATA[', ']]>'), $str));
     }
 }
