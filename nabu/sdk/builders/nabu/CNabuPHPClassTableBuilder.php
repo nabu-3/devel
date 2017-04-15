@@ -1639,7 +1639,10 @@ class CNabuPHPClassTableBuilder extends CNabuPHPClassTableAbstractBuilder
     private function prepareRefresh()
     {
         if ($this->have_lang) {
-            $fragment = new CNabuPHPMethodBuilder($this, 'refresh');
+            $fragment = new CNabuPHPMethodBuilder(
+                $this, 'refresh', CNabuPHPMethodBuilder::METHOD_PUBLIC,
+                false, false, false, true, 'bool'
+            );
             $fragment->addComment('Overrides refresh method to add translations branch to refresh.');
             $fragment->addComment('@return bool Returns true if transations are empty or refreshed.');
             $fragment->addParam(
@@ -1807,11 +1810,15 @@ class CNabuPHPClassTableBuilder extends CNabuPHPClassTableAbstractBuilder
         $output[] = '    );';
 
         if ($is_translation) {
-            $output[] = '    $retval->iterate(';
-            $output[] = '        function ($key, $nb_translation) use($translated) {';
-            $output[] = '            $nb_translation->setTranslatedObject($translated);';
-            $output[] = '        }';
-            $output[] = '    );';
+            $output[] = "    if (\$translated instanceof INabuTranslated) {";
+            $output[] = '        $retval->iterate(';
+            $output[] = '            function ($key, $nb_translation) use($translated) {';
+            $output[] = '                $nb_translation->setTranslatedObject($translated);';
+            $output[] = '                return true;';
+            $output[] = '            }';
+            $output[] = '        );';
+            $output[] = '    }';
+            $this->getDocument()->addUse('\nabu\data\lang\interfaces\INabuTranslated');
         }
 
         $output[] = '} else {';
