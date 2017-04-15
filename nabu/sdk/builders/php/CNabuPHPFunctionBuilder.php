@@ -24,44 +24,80 @@ use \nabu\sdk\builders\CNabuAbstractBuilder;
 /**
  * Class to create PHP functions. These functions can be included in classes
  * or traits.
- * @author Rafael Gutierrez <rgutierrez@wiscot.com>
- * @version 3.0.0 Surface
+ * @author Rafael Gutierrez <rgutierrez@nabu-3.com>
+ * @since 3.0.0 Surface
+ * @version 3.0.12 Surface
+ * @package nabu\sdk\builders\php
  */
 class CNabuPHPFunctionBuilder extends CNabuPHPFragmentBuilder
 {
+    /** @var string $name Name of the function. */
     private $name;
+    /** @var array $params Parameters of this function. */
     private $params = array();
+    /** @var array $body Lines in the body of this function. */
     private $body = array();
+    /** @var bool $have_return_type If true, the function have a return type. */
+    private $have_return_type = false;
+    /** @var string $return_type If $have_return_type, contains the type to be returned by this function. */
+    private $return_type = null;
 
     /**
-     *
+     * Constructor. Receives a full description of the declaration (header) of the function.
      * @param CNabuAbstractBuilder $container Container builder object
-     * @param type $name
+     * @param string $name Name of the function.
+     * @param bool $have_return_type If true, a return type is allowed.
+     * @param string $return_type Return type to place as return cast.
      */
-    public function __construct($container, $name)
-    {
+    public function __construct(
+        CNabuAbstractBuilder $container,
+        string $name,
+        bool $have_return_type = false,
+        string $return_type = null
+    ) {
         parent::__construct($container);
 
         $this->name = $name;
+        $this->have_return_type = $have_return_type;
+        $this->return_type = $return_type;
     }
 
-    public function getName()
+    /**
+     * Gets the name of the function.
+     * @return string Returns the name.
+     */
+    public function getName() : string
     {
         return $this->name;
     }
 
+    /**
+     * Gets the parameters array of the function.
+     * @return array Returns defined parameters as array.
+     */
     public function getParams()
     {
         return $this->params;
     }
 
+    /**
+     * Add a parameter to this function.
+     * @param string $name Name of the parameter.
+     * @param string $type Type of the parameter.
+     * @param bool $is_def If true $def_value is treated as the default value of parameter.
+     * @param mixed $def_value Default value of parameter if $is_def is true. Scalar and string values are interpreted
+     * by type. Objects are unpredictable.
+     * @param string $comment_type Type of the parameter in comment.
+     * @param string $comment Comment of the parameter.
+     * @return bool Returns true if the parameter is added or false if already exists.
+     */
     public function addParam(
-        $name,
-        $type = null,
-        $is_def = false,
-        $def_value = false,
-        $comment_type = false,
-        $comment = null
+        string $name,
+        string $type = null,
+        bool $is_def = false,
+        $def_value = null,
+        string $comment_type = null,
+        string $comment = null
     ) {
         $param = array('name' => $name);
         if ($type !== null) {
@@ -69,10 +105,10 @@ class CNabuPHPFunctionBuilder extends CNabuPHPFragmentBuilder
         }
 
         if ($is_def) {
-            $param['default'] = $def_value;
+            $param['default'] = ($type === 'bool' && $def_value === null ? false : $def_value);
         }
 
-        if ($comment_type !== false) {
+        if ($comment_type !== null) {
             $param['comment_type'] = $comment_type;
         }
 
@@ -90,12 +126,21 @@ class CNabuPHPFunctionBuilder extends CNabuPHPFragmentBuilder
         return $retval;
     }
 
-    public function getBody()
+    /**
+     * Gets the body of the function.
+     * @return array Retuns the body as array.
+     */
+    public function getBody() : array
     {
         return $this->body;
     }
 
-    public function addBody($lines)
+    /**
+     * Adds a body fragment to the body.
+     * @param mixed $lines A string or an array representing one or more lines of code in the body.
+     * @return bool Returns true if lines are added.
+     */
+    public function addBody($lines) : bool
     {
         $retval = false;
 
@@ -110,7 +155,10 @@ class CNabuPHPFunctionBuilder extends CNabuPHPFragmentBuilder
         return $retval;
     }
 
-    protected function getPrefix()
+    /**
+     * Gets the Prefix of a function.
+     * @return string Retuns the prefix if needed or an empty string if not. */
+    protected function getPrefix() : string
     {
         return '';
     }
@@ -170,7 +218,12 @@ class CNabuPHPFunctionBuilder extends CNabuPHPFragmentBuilder
             $content .= $params;
         }
 
-        $content .= ")\n$padding{\n";
+        $content .= ')'
+                 . ($this->have_return_type && is_string($this->return_type) && strlen($this->return_type) > 0
+                    ? ' : ' . $this->return_type
+                    : ''
+                   )
+                 . "\n$padding{\n";
 
         return $content;
     }

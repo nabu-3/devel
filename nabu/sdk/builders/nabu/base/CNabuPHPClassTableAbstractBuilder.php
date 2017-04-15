@@ -25,9 +25,9 @@ use nabu\db\interfaces\INabuDBDescriptor;
 
 /**
  * This class implements a lot of methods shared between different child classes.
- * @author Rafael Gutierrez <rgutierrez@wiscot.com>
+ * @author Rafael Gutierrez <rgutierrez@nabu-3.com>
  * @since 3.0.0 Surface
- * @version 3.0.7 Surface
+ * @version 3.0.12 Surface
  * @package \nabu\sdk\builders\nabu\base
  */
 class CNabuPHPClassTableAbstractBuilder extends CNabuPHPClassBuilder

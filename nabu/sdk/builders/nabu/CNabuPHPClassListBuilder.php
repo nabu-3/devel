@@ -28,7 +28,7 @@ use nabu\db\interfaces\INabuDBDescriptor;
 
 /**
  * Class to create class list intances.
- * @author Rafael Gutierrez <rgutierrez@wiscot.com>
+ * @author Rafael Gutierrez <rgutierrez@nabu-3.com>
  * @version 3.0.0 Surface
  * @package \nabu\sdk\builders\nabu
  */
@@ -196,7 +196,7 @@ class CNabuPHPClassListBuilder extends CNabuPHPClassTableAbstractBuilder
     private function prepareCreateSecondaryIndexes()
     {
         $fragment = new CNabuPHPMethodBuilder(
-            $this, 'createSecondaryIndexes', CNabuPHPMethodBuilder::FUNCTION_PROTECTED
+            $this, 'createSecondaryIndexes', CNabuPHPMethodBuilder::METHOD_PROTECTED
         );
         $fragment->addComment('Creates alternate indexes for this list.');
 

@@ -24,7 +24,7 @@ use nabu\xml\CNabuXMLObject;
 
 /**
  * Main builder for text files
- * @author Rafael Gutierrez <rgutierrez@wiscot.com>
+ * @author Rafael Gutierrez <rgutierrez@nabu-3.com>
  * @since 3.0.12 Surface
  * @version 3.0.12 Surface
  */
@@ -91,15 +91,18 @@ class CNabuXMLBuilder extends CNabuAbstractBuilder
     {
         $value = '';
 
+        $root = new SimpleXMLElement('<nabuPackage/>', LIBXML_PARSEHUGE);
+
         if ($this->getDocument() === $this &&
-            count($this->fragments) === 1 &&
-            $this->fragments[0] instanceof CNabuXMLObject
+            count($this->fragments) > 0
         ) {
-            $root = new SimpleXMLElement('<nabuPackage/>', LIBXML_PARSEHUGE);
-            $this->fragments[0]->build($root);
-            $value = $root->asXML();
+            foreach ($this->fragments as $fragment) {
+                if ($fragment instanceof CNabuXMLObject) {
+                    $fragment->build($root);
+                }
+            }
         }
 
-        return $value;
+        return $root->asXML();
     }
 }

@@ -24,7 +24,7 @@ use nabu\sdk\builders\nabu\CNabuPHPClassListBuilder;
 use nabu\core\exceptions\ENabuException;
 
 /**
- * @author Rafael Gutierrez <rgutierrez@wiscot.com>
+ * @author Rafael Gutierrez <rgutierrez@nabu-3.com>
  * @version 3.0.0 Surface
  */
 

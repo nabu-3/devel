@@ -24,7 +24,7 @@ use \nabu\sdk\builders\php\traits\TNabuPHPCommentsBuilder;
 
 /**
  * Main builder for all PHP files
- * @author Rafael Gutierrez <rgutierrez@wiscot.com>
+ * @author Rafael Gutierrez <rgutierrez@nabu-3.com>
  * @version 3.0.0 Surface
  */
 class CNabuPHPBuilder extends CNabuAbstractBuilder

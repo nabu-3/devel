@@ -25,7 +25,7 @@ use \nabu\core\CNabuObject;
 
 /**
  * This is the base abstract class to create code builders.
- * @author Rafael Gutierrez <rgutierrez@wiscot.com>
+ * @author Rafael Gutierrez <rgutierrez@nabu-3.com>
  * @version 3.0.0 Surface
  */
 abstract class CNabuAbstractBuilder extends CNabuObject implements INabuBuilder

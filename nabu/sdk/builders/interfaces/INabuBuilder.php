@@ -21,7 +21,7 @@ namespace nabu\sdk\builders\interfaces;
 
 /**
  * Interface to define Nabu builders to create code automatically.
- * @author Rafael Gutierrez <rgutierrez@wiscot.com>
+ * @author Rafael Gutierrez <rgutierrez@nabu-3.com>
  * @version 3.0.0 Surface
  */
 interface INabuBuilder

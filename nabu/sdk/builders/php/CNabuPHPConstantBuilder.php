@@ -23,7 +23,7 @@ use nabu\sdk\builders\php\CNabuPHPFragmentBuilder;
 
 /**
  * Class to create PHP constants. These constants can be included in classes or traits.
- * @author Rafael Gutierrez <rgutierrez@wiscot.com>
+ * @author Rafael Gutierrez <rgutierrez@nabu-3.com>
  * @version 3.0.0 Surface
  */
 class CNabuPHPConstantBuilder extends CNabuPHPFragmentBuilder

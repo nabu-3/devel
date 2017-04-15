@@ -23,7 +23,7 @@ use \nabu\core\exceptions\ENabuCoreException;
 
 /**
  * Abstract class to implement fragments of code.
- * @author Rafael Gutierrez <rgutierrez@wiscot.com>
+ * @author Rafael Gutierrez <rgutierrez@nabu-3.com>
  * @version 3.0.0 Surface
  */
 abstract class CNabuAbstractFragmentBuilder extends CNabuAbstractBuilder

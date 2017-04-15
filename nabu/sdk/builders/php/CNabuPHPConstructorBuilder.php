@@ -23,7 +23,7 @@ use \nabu\sdk\builders\CNabuAbstractBuilder;
 use \nabu\sdk\builders\php\CNabuPHPMethodBuilder;
 
 /**
- * @author Rafael Gutierrez <rgutierrez@wiscot.com>
+ * @author Rafael Gutierrez <rgutierrez@nabu-3.com>
  * @version 3.0.0 Surface
  */
 class CNabuPHPConstructorBuilder extends CNabuPHPMethodBuilder
@@ -37,7 +37,7 @@ class CNabuPHPConstructorBuilder extends CNabuPHPMethodBuilder
      */
     public function __construct(
         $container,
-        $scope = CNabuPHPMethodBuilder::FUNCTION_PUBLIC,
+        $scope = CNabuPHPMethodBuilder::METHOD_PUBLIC,
         $static = false,
         $abstract = false
     ) {

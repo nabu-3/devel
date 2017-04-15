@@ -33,7 +33,7 @@ use nabu\db\interfaces\INabuDBSyntaxBuilder;
  * Normally, after create a class we recommend to subclass created classes to
  * extend functionalities, allowing to you to recreate base class each time
  * that your table changes or when Nabu will increase the set of methods.
- * @author Rafael Gutierrez <rgutierrez@wiscot.com>
+ * @author Rafael Gutierrez <rgutierrez@nabu-3.com>
  * @since 3.0.0 Surface
  * @version 3.0.8 Surface
  * @package \nabu\sdk\builders\nabu
@@ -200,6 +200,13 @@ class CNabuPHPClassTableBuilder extends CNabuPHPClassTableAbstractBuilder
             $this->addUse('TNabuTranslation');
         }
 
+        if ($this->getStorageDescriptor()->hasField($this->table_name . '_hash')) {
+            $this->addInterface('INabuHashed');
+            $this->getDocument()->addUse('\nabu\core\interfaces\INabuHashed');
+            $this->getDocument()->addUse('\nabu\core\traits\TNabuHashed');
+            $this->addUse('TNabuHashed');
+        }
+
         $this->addComment(
                 "Class to manage the entity $this->entity_name stored in the storage named $this->table."
         );
@@ -324,7 +331,7 @@ class CNabuPHPClassTableBuilder extends CNabuPHPClassTableAbstractBuilder
         $fragment = new CNabuPHPMethodBuilder(
                 $this,
                 'getStorageDescriptorPath',
-                CNabuPHPMethodBuilder::FUNCTION_PUBLIC,
+                CNabuPHPMethodBuilder::METHOD_PUBLIC,
                 true
         );
         $fragment->addComment('Get the file name and path where is stored the descriptor in JSON format.');
@@ -340,7 +347,7 @@ class CNabuPHPClassTableBuilder extends CNabuPHPClassTableAbstractBuilder
     private function prepareGetStorageName()
     {
         $fragment = new CNabuPHPMethodBuilder(
-            $this, 'getStorageName', CNabuPHPMethodBuilder::FUNCTION_PUBLIC, true
+            $this, 'getStorageName', CNabuPHPMethodBuilder::METHOD_PUBLIC, true
         );
         $fragment->addComment('Get the table name represented by this class');
         $fragment->addComment('@return string Return the table name');
@@ -451,9 +458,16 @@ class CNabuPHPClassTableBuilder extends CNabuPHPClassTableAbstractBuilder
 
     private function buildGetter($field, $studly_name, $entity_name)
     {
+        $have_return_type = false;
+        $return_type = null;
+
         switch ($field['data_type']) {
             case 'int':
                 $data_type = 'int';
+                if (!$field['is_nullable']) {
+                    $have_return_type = true;
+                    $return_type = 'int';
+                }
                 break;
             case 'enum':
             case 'varchar':
@@ -461,6 +475,10 @@ class CNabuPHPClassTableBuilder extends CNabuPHPClassTableAbstractBuilder
             case 'text':
             case 'longtext':
                 $data_type = 'string';
+                if (!$field['is_nullable']) {
+                    $have_return_type = true;
+                    $return_type = 'string';
+                }
                 break;
             default:
                 $data_type = 'mixed';
@@ -475,7 +493,10 @@ class CNabuPHPClassTableBuilder extends CNabuPHPClassTableAbstractBuilder
         $data_type = ($nullable && $data_type !== 'mixed' ? 'null|' : '')
                    . ($is_attr && $data_type === 'string' ? 'array' : $data_type);
 
-        $fragment = new CNabuPHPMethodBuilder($this, 'get' . $studly_name);
+        $fragment = new CNabuPHPMethodBuilder($this,
+            'get' . $studly_name, CNabuPHPMethodBuilder::METHOD_PUBLIC,
+            false, false, false, $have_return_type, $return_type
+        );
         $fragment->addComment("Get $entity_name attribute value");
         $fragment->addComment("@return $data_type Returns the $entity_name value");
         if ($is_attr) {
@@ -490,10 +511,21 @@ class CNabuPHPClassTableBuilder extends CNabuPHPClassTableAbstractBuilder
     private function buildSetter($field, $param_name, $studly_name, $entity_name)
     {
         $name = $field['name'];
+        $param_type = null;
+        $param_is_def = false;
+        $param_default = false;
 
         switch ($field['data_type']) {
             case 'int':
                 $data_type = 'int';
+                $param_type = 'int';
+                if ($field['default'] !== null) {
+                    $param_is_def = true;
+                    $param_default = (int)$field['default'];
+                } elseif ($field['is_nullable']) {
+                    $param_is_def = true;
+                    $param_default = null;
+                }
                 break;
             case 'enum':
             case 'varchar':
@@ -501,6 +533,14 @@ class CNabuPHPClassTableBuilder extends CNabuPHPClassTableAbstractBuilder
             case 'text':
             case 'longtext':
                 $data_type = 'string';
+                $param_type = 'string';
+                if ($field['default'] !== null) {
+                    $param_is_def = true;
+                    $param_default = $field['default'];
+                } elseif ($field['is_nullable']) {
+                    $param_is_def = true;
+                    $param_default = null;
+                }
                 break;
             default:
                 $data_type = 'mixed';
@@ -516,10 +556,17 @@ class CNabuPHPClassTableBuilder extends CNabuPHPClassTableAbstractBuilder
                    . $data_type
                    . ($is_attr && $data_type !== 'mixed' ? '|array' : '');
 
-        $fragment = new CNabuPHPMethodBuilder($this, 'set' . $studly_name);
-        $fragment->addComment("Sets the $entity_name attribute value");
-        $fragment->addComment("@return $this->name Returns \$this");
-        $fragment->addParam($param_name, null, false, false, $data_type, 'New value for attribute');
+        $fragment = new CNabuPHPMethodBuilder(
+            $this, 'set' . $studly_name, CNabuPHPMethodBuilder::METHOD_PUBLIC,
+            false, false, false, true, 'CNabuDataObject'
+        );
+        $fragment->addComment("Sets the $entity_name attribute value.");
+        $fragment->addComment("@return CNabuDataObject Returns self instance to grant chained setters call.");
+        $this->getDocument()->addUse('\nabu\data\CNabuDataObject');
+        $fragment->addParam(
+            $param_name, $param_type, $param_is_def, $param_default,
+            $data_type, 'New value for attribute'
+        );
         if (!$nullable) {
             $fragment->addFragment(array(
                 "if (\$$param_name === null) {",
@@ -565,7 +612,7 @@ class CNabuPHPClassTableBuilder extends CNabuPHPClassTableAbstractBuilder
             $subclass_namespace = preg_replace('/\\\\base$/', '', $this->class_namespace);
 
 
-            $fragment = new CNabuPHPMethodBuilder($this, $func_name, CNabuPHPMethodBuilder::FUNCTION_PUBLIC, true);
+            $fragment = new CNabuPHPMethodBuilder($this, $func_name, CNabuPHPMethodBuilder::METHOD_PUBLIC, true);
             $fragment->addComment(
                     "Get all items in the storage as an associative array where the field '$key' "
                   . "is the index, and each value is an instance of class $this->name.");
@@ -848,7 +895,7 @@ class CNabuPHPClassTableBuilder extends CNabuPHPClassTableAbstractBuilder
     {
         if (!$this->is_translation) {
             $func_name = 'getFiltered' . str_replace(' ', '', $this->entity_name) . 'List';
-            $fragment = new CNabuPHPMethodBuilder($this, $func_name, CNabuPHPMethodBuilder::FUNCTION_PUBLIC, true);
+            $fragment = new CNabuPHPMethodBuilder($this, $func_name, CNabuPHPMethodBuilder::METHOD_PUBLIC, true);
             $fragment->addComment(
                   "Gets a filtered list of $this->entity_name instances represented as an array. "
                 . 'Params allows the capability of select a subset of fields, order by concrete fields, '
@@ -1066,7 +1113,7 @@ class CNabuPHPClassTableBuilder extends CNabuPHPClassTableAbstractBuilder
                              ? preg_replace('/\\\\base$/', '', $this->class_namespace)
                              : $this->class_namespace
             ;
-            $fragment = new CNabuPHPMethodBuilder($this, 'findByKey', CNabuPHPMethodBuilder::FUNCTION_PUBLIC, true);
+            $fragment = new CNabuPHPMethodBuilder($this, 'findByKey', CNabuPHPMethodBuilder::METHOD_PUBLIC, true);
             $fragment->addComment("Find an instance identified by $key_name field.");
             $fragment->addComment("@return $keyed_class Returns a valid instance if exists or null if not.");
             $with_customer = false;
@@ -1391,7 +1438,7 @@ class CNabuPHPClassTableBuilder extends CNabuPHPClassTableAbstractBuilder
         $fragment = new CNabuPHPMethodBuilder(
                 $this,
                 'checkForValidTranslationInstance',
-                CNabuPHPMethodBuilder::FUNCTION_PROTECTED
+                CNabuPHPMethodBuilder::METHOD_PROTECTED
         );
         $fragment->addComment(
                 "Check if the instance passed as parameter \$translation is a valid child "
@@ -1451,7 +1498,7 @@ class CNabuPHPClassTableBuilder extends CNabuPHPClassTableAbstractBuilder
     private function prepareGetCustomerUsedLanguages($lang_namespace, $lang_class)
     {
         $fragment = new CNabuPHPMethodBuilder(
-            $this, 'getCustomerUsedLanguages', CNabuPHPMethodBuilder::FUNCTION_PUBLIC, true
+            $this, 'getCustomerUsedLanguages', CNabuPHPMethodBuilder::METHOD_PUBLIC, true
         );
         $fragment->addComment("Get all language instances used along of all $this->entity_name set of a Customer");
         $fragment->addComment("@return CNabuLanguageList Returns the list of language instances used.");
@@ -1622,7 +1669,7 @@ class CNabuPHPClassTableBuilder extends CNabuPHPClassTableAbstractBuilder
         $fragment = new CNabuPHPMethodBuilder(
                 $this,
                 'getLanguagesForTranslatedObject',
-                CNabuPHPMethodBuilder::FUNCTION_PUBLIC,
+                CNabuPHPMethodBuilder::METHOD_PUBLIC,
                 true
         );
         $fragment->addComment(
@@ -1663,7 +1710,7 @@ class CNabuPHPClassTableBuilder extends CNabuPHPClassTableAbstractBuilder
         $fragment = new CNabuPHPMethodBuilder(
                 $this,
                 'getTranslationsForTranslatedObject',
-                CNabuPHPMethodBuilder::FUNCTION_PUBLIC,
+                CNabuPHPMethodBuilder::METHOD_PUBLIC,
                 true
         );
         $fragment->addComment(

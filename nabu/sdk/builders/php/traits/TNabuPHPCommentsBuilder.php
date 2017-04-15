@@ -22,7 +22,7 @@ namespace nabu\sdk\builders\php\traits;
 /**
  * This trait implements methods related with the creation of comments in PHP.
  * Classes using this trait automates the use of comments.
- * @author Rafael Gutierrez <rgutierrez@wiscot.com>
+ * @author Rafael Gutierrez <rgutierrez@nabu-3.com>
  * @version 3.0.0 Surface
  */
 trait TNabuPHPCommentsBuilder

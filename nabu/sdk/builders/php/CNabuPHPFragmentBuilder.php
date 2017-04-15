@@ -24,7 +24,7 @@ use \nabu\sdk\builders\php\traits\TNabuPHPCommentsBuilder;
 
 /**
  * Abstract base class to create PHP fragment classes
- * @author Rafael Gutierrez <rgutierrez@wiscot.com>
+ * @author Rafael Gutierrez <rgutierrez@nabu-3.com>
  * @version 3.0.0 Surface
  */
 abstract class CNabuPHPFragmentBuilder extends CNabuAbstractFragmentBuilder

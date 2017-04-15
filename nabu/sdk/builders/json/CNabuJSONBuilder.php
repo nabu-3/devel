@@ -23,7 +23,7 @@ use \nabu\sdk\builders\CNabuAbstractBuilder;
 
 /**
  * Main builder for JSON files
- * @author Rafael Gutierrez <rgutierrez@wiscot.com>
+ * @author Rafael Gutierrez <rgutierrez@nabu-3.com>
  * @version 3.0.0 Surface
  */
 class CNabuJSONBuilder extends CNabuAbstractBuilder

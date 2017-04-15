@@ -22,45 +22,61 @@ namespace nabu\sdk\builders\php;
 use \nabu\sdk\builders\CNabuAbstractBuilder;
 
 /**
- * @author Rafael Gutierrez <rgutierrez@wiscot.com>
+ * @author Rafael Gutierrez <rgutierrez@nabu-3.com>
  * @version 3.0.0 Surface
  */
 class CNabuPHPMethodBuilder extends CNabuPHPFunctionBuilder
 {
-    const FUNCTION_PRIVATE = 'private';
-    const FUNCTION_PROTECTED = 'protected';
-    const FUNCTION_PUBLIC = 'public';
-    
+    /** @var string Constant to represent private methods. */
+    const METHOD_PRIVATE = 'private';
+    /** @var string Constant to represent protected methods. */
+    const METHOD_PROTECTED = 'protected';
+    /** @var string Constant to represent public methods. */
+    const METHOD_PUBLIC = 'public';
+
+    /** @var string|bool $scope Scope of this method instance (private, protected or public). */
     private $scope = false;
+    /** @var bool $abstract If true, this instance represents an abstract method. */
     private $abstract = false;
+    /** @var bool $static If true, this instance represents an static method. */
     private $static = false;
-    
+    /** @var bool $final If true, this instnace represents a final method. */
+    private $final = false;
+
     /**
      * Constructor
      * @param CNabuAbstractBuilder $container Container builder object
      * @param string $name Name of the method.
      * @param string $scope Scope of the method as defined in constants
-     * @param type $static If true the method is static.
-     * @param boolean $abstract If true the method is abstract.
+     * @param bool $static If true the method is static.
+     * @param bool $abstract If true the method is abstract.
+     * @param bool $final If true, the method is a final method.
+     * @param bool $have_return_type If true, a return type is allowed.
+     * @param string $return_type Return type to place as return cast.
      */
     public function __construct(
-        $container,
-        $name,
-        $scope = CNabuPHPMethodBuilder::FUNCTION_PUBLIC,
-        $static = false,
-        $abstract = false
+        CNabuAbstractBuilder $container,
+        string $name,
+        string $scope = CNabuPHPMethodBuilder::METHOD_PUBLIC,
+        bool $static = false,
+        bool $abstract = false,
+        bool $final = false,
+        bool $have_return_type = false,
+        string $return_type = null
     ) {
-        parent::__construct($container, $name);
-        
+        parent::__construct($container, $name, $have_return_type, $return_type);
+
         $this->scope = $scope;
         $this->abstract = $abstract;
         $this->static = $static;
+        $this->final = $final;
     }
-    
-    protected function getPrefix()
+
+    protected function getPrefix() : string
     {
         return
-                  ($this->scope !== false ? $this->scope . ' ' : '')
+                  ($this->final !== false ? 'final ' : '')
+                . ($this->scope !== false ? $this->scope . ' ' : '')
                 . ($this->static !== false ? 'static ' : '')
                 . ($this->abstract !== false ? 'abstract ' : '')
         ;
