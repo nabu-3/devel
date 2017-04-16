@@ -230,7 +230,11 @@ class CNabuPHPClassTableBuilder extends CNabuPHPClassTableAbstractBuilder
         $fragment->addFragment('parent::__construct();');
 
         if ($this->is_translated) {
+            $list_name = preg_replace('/Base$/', 'LanguageList', $this->class_name);
+            $list_ns = preg_replace('/\\\\base/', '', $this->class_namespace);
             $fragment->addFragment('$this->__translatedConstruct();');
+            $fragment->addFragment("\$this->translations_list = new $list_name();");
+            $this->getDocument()->addUse("\\$list_ns\\$list_name");
         }
 
         $this->addFragment($fragment);
