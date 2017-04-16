@@ -329,12 +329,23 @@ createXML(
         'nb_site_target_order' => 'order',
         'nb_site_target_begin_date' => 'beginDate',
         'nb_site_target_plugin_name' => 'plugin',
-        'nb_site_target_use_commerce' => 'useCommerce',
-        'nb_site_target_use_apps' => 'useApps',
+        'nb_site_target_php_trace' => 'trace',
+        'nb_site_target_use_commerce' => 'useCommerce'
     ),
-    null,
-    null,
-    null,
+    array(
+        'nb_site_target_attributes' => 'attributes'
+    ),
+    array(
+        'nb_site_target_lang_main_image' => 'image'
+    ),
+    array(
+        'nb_site_target_lang_title' => 'title',
+        'nb_site_target_lang_subtitle' => 'subtitle',
+        'nb_site_target_lang_opening' => 'opening',
+        'nb_site_target_lang_content' => 'content',
+        'nb_site_target_lang_footer' => 'footer',
+        'nb_site_target_lang_aside' => 'aside'
+    ),
     'nabu\data\site',
     'CNabuSiteTarget',
     true,
@@ -349,6 +360,25 @@ createEntity(
     true,
     $dictionary
 );
+createXML(
+    'nb_site_target_section',
+    'nabu\xml\site\base',
+    'CNabuXMLSiteTargetSectionBase',
+    'Site Target Section',
+    'section',
+    array(
+        'nb_site_target_section_key' => 'key',
+        'nb_site_target_section_order' => 'order'
+    ),
+    null,
+    null,
+    null,
+    'nabu\data\site',
+    'CNabuSiteTargetSection',
+    true,
+    $dictionary,
+    '3.0.12 Surface'
+);
 createEntity(
     'nb_site_target_cta',
     'nabu\data\site\base',
@@ -357,6 +387,22 @@ createEntity(
     true,
     $dictionary
 );
+createXML(
+    'nb_site_target_cta',
+    'nabu\xml\site\base',
+    'CNabuXMLSiteTargetCTABase',
+    'Site Target CTA',
+    'cta',
+    null,
+    null,
+    null,
+    null,
+    'nabu\data\site',
+    'CNbuSiteTargetCTA',
+    true,
+    $dictionary,
+    '3.0.12 Surface'
+);
 createEntity(
     'nb_site_target_cta_role',
     'nabu\data\site\base',
@@ -364,6 +410,22 @@ createEntity(
     'Site Target CTA Role',
     true,
     $dictionary
+);
+createXML(
+    'nb_site_target_cta_role',
+    'nabu\xml\site\base',
+    'CNabuXMLSiteTargetCTARoleBase',
+    'Site Target CTA Role',
+    'role',
+    null,
+    null,
+    null,
+    null,
+    'nabu\data\site',
+    'CNabuSiteTargetCTARole',
+    true,
+    $dictionary,
+    '3.0.12 Surface'
 );
 createEntity(
     'nb_site_target_medioteca',

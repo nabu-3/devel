@@ -295,7 +295,7 @@ class CNabuPHPClassTableXMLBuilder extends CNabuPHPClassTableAbstractBuilder
             foreach ($this->element_attributes as $field => $attr) {
                 $fragment->addFragment("    '$field' => '$attr'" . (--$count > 0 ? ',' : ''));
             }
-            $fragment->addFragment('), true);');
+            $fragment->addFragment('), false);');
         }
 
         $this->getDocument()->addUse('\SimpleXMLElement');
@@ -328,7 +328,7 @@ class CNabuPHPClassTableXMLBuilder extends CNabuPHPClassTableAbstractBuilder
             foreach ($this->element_attributes as $field => $attr) {
                 $fragment->addFragment("        '$field' => '$attr'" . (--$count > 0 ? ',' : ''));
             }
-            $fragment->addFragment('    ), true);');
+            $fragment->addFragment('    ), false);');
         }
 
         $fragment->addFragment('}');
@@ -365,7 +365,7 @@ class CNabuPHPClassTableXMLBuilder extends CNabuPHPClassTableAbstractBuilder
             foreach ($this->element_childs as $field => $child) {
                 $fragment->addFragment("    '$field' => '$child'" . (--$count > 0 ? ',' : ''));
             }
-            $fragment->addFragment('), true);');
+            $fragment->addFragment('), false);');
         }
 
         $this->getDocument()->addUse('\SimpleXMLElement');
