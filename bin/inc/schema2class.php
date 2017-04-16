@@ -368,11 +368,22 @@ createXML(
     'section',
     array(
         'nb_site_target_section_key' => 'key',
-        'nb_site_target_section_order' => 'order'
+        'nb_site_target_section_order' => 'order',
+        'nb_site_target_section_anchor' => 'anchor',
+        'nb_site_target_section_css_class' => 'cssClass'
     ),
     null,
-    null,
-    null,
+    array(
+        'nb_site_target_section_main_image' => 'image'
+    ),
+    array(
+        'nb_site_target_section_lang_title' => 'title',
+        'nb_site_target_section_lang_subtitle' => 'subtitle',
+        'nb_site_target_section_lang_opening' => 'opening',
+        'nb_site_target_section_lang_content' => 'content',
+        'nb_site_target_section_lang_footer' => 'footer',
+        'nb_site_target_section_lang_aside' => 'aside'
+    ),
     'nabu\data\site',
     'CNabuSiteTargetSection',
     true,
@@ -393,12 +404,22 @@ createXML(
     'CNabuXMLSiteTargetCTABase',
     'Site Target CTA',
     'cta',
+    array(
+        'nb_site_target_cta_key' => 'key',
+        'nb_site_target_cta_order' => 'order',
+        'nb_site_target_cta_css_class' => 'cssClass'
+    ),
     null,
-    null,
-    null,
-    null,
+    array(
+        'nb_site_target_cta_lang_image' => 'image'
+    ),
+    array(
+        'nb_site_target_cta_lang_title' => 'title',
+        'nb_site_target_cta_lang_alternate' => 'alt',
+        'nb_site_target_cta_lang_anchor_text' => 'anchorText'
+    ),
     'nabu\data\site',
-    'CNbuSiteTargetCTA',
+    'CNabuSiteTargetCTA',
     true,
     $dictionary,
     '3.0.12 Surface'
