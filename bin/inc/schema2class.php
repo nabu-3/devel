@@ -55,7 +55,7 @@ if ($class_path === null) {
     $class_path = nbCLIInput('Base path: ', false);
 }
 
-echo "\nWe go to create all required base classes of Nabu-3.\n";
+echo "\nWe go to create all required base classes of nabu-3.\n";
 echo "If you continue you will loose all changes made in previous files.\n\n";
 
 nbCLICheckContinue();
@@ -93,6 +93,32 @@ createEntity(
     'Language',
     true,
     $dictionary
+);
+createXML(
+    'nb_language',
+    'nabu\xml\lang\base',
+    'CNabuXMLLanguageBase',
+    'Language',
+    'language',
+    array(
+        'nb_language_type' => 'type',
+        'nb_language_enabled' => 'enabled',
+        'nb_language_ISO639_1' => 'ISO639v1',
+        'nb_language_ISO639_2' => 'ISO639v2',
+        'nb_language_is_api' => 'isAPI',
+        'nb_language_default_country_code' => 'defaultCountryCode',
+        'nb_language_flag_url' => 'flagURL'
+    ),
+    array(
+        'nb_language_name' => 'name'
+    ),
+    null,
+    null,
+    'nabu\data\lang',
+    'CNabuLanguage',
+    true,
+    $dictionary,
+    '3.0.12 Surface'
 );
 
 // Customer: nabu\data\customer\base
@@ -214,7 +240,35 @@ createEntity(
     'CNabuSiteBase',
     'Site',
     true,
-    $dictionary
+    $dictionary,
+    '3.0.0 Surface'
+);
+createXML(
+    'nb_site',
+    'nabu\xml\site\base',
+    'CNabuXMLSiteBase',
+    'Site',
+    'site',
+    array(
+        'nb_site_key' => 'key',
+        'nb_site_http_support' => 'http_support',
+        'nb_site_https_support' => 'https_support'
+    ),
+    null,
+    array(
+        'nb_site_lang_enabled' => 'enabled',
+        'nb_site_lang_translation_status' => 'status',
+        'nb_site_lang_order' => 'order',
+        'nb_site_lang_editable' => 'editable'
+    ),
+    array(
+        'nb_site_lang_name' => 'name'
+    ),
+    'nabu\data\site',
+    'CNabuSite',
+    true,
+    $dictionary,
+    '3.0.12 Surface'
 );
 createEntity(
     'nb_site_module',
@@ -263,6 +317,29 @@ createEntity(
     'Site Target',
     true,
     $dictionary
+);
+createXML(
+    'nb_site_target',
+    'nabu\xml\site\base',
+    'CNabuXMLSiteTargetBase',
+    'Site Target',
+    'target',
+    array(
+        'nb_site_target_key' => 'key',
+        'nb_site_target_order' => 'order',
+        'nb_site_target_begin_date' => 'beginDate',
+        'nb_site_target_plugin_name' => 'plugin',
+        'nb_site_target_use_commerce' => 'useCommerce',
+        'nb_site_target_use_apps' => 'useApps',
+    ),
+    null,
+    null,
+    null,
+    'nabu\data\site',
+    'CNabuSiteTarget',
+    true,
+    $dictionary,
+    '3.0.12 Surface'
 );
 createEntity(
     'nb_site_target_section',

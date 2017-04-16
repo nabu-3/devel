@@ -53,23 +53,23 @@ class CNabuPHPConstantBuilder extends CNabuPHPFragmentBuilder
         $this->type = $type;
     }
 
-    protected function getHeader($padding = '')
+    protected function getHeader(string $padding = '') : string
     {
         return '';
     }
 
-    protected function getFooter($padding = '')
+    protected function getFooter(string $padding = '') : string
     {
         return '';
     }
 
-    public function create($padding = '')
+    public function create(string $padding = '') : string
     {
         $this->addComment('@var' . ($this->type !== false ? ' ' . $this->type : ''));
         return parent::create($padding);
     }
 
-    protected function getContent($padding = '')
+    protected function getContent(string $padding = '') : string
     {
         return $padding . 'const ' . $this->name . ' = ' . $this->valueToString($this->value) . ";\n";
     }

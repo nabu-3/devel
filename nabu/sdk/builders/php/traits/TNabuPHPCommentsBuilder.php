@@ -33,10 +33,10 @@ trait TNabuPHPCommentsBuilder
      * of the comments.
      * @return string Return the comments string.
      */
-    protected function getComments($padding = '')
+    protected function getComments(string $padding = '') : string
     {
         $comments = '';
-        
+
         if (count($this->comments) > 0) {
             $comments = $padding . "/**\n";
             foreach ($this->comments as $line) {
@@ -44,16 +44,22 @@ trait TNabuPHPCommentsBuilder
             }
             $comments .= $padding . " */\n";
         }
-        
+
         return $comments;
     }
-    
-    protected function truncateComment($padding, $content)
+
+    /**
+     * Truncates a comment to fit the max length of a PHP code line (120 characters).
+     * @param string $padding Optional padding to be setted before each truncated line.
+     * @param string $content Content to be truncated.
+     * @return string Returns the content truncated. Each line is separated of his next line by a "\n".
+     */
+    protected function truncateComment(string $padding, string $content) : string
     {
         $comment = '';
-        
+
         $line = $padding . ' * ' . $content;
-        
+
         do {
             if (strlen($line) > 120) {
                 $p1 = strrpos(substr($line, 0, 120), ' ');
@@ -69,7 +75,7 @@ trait TNabuPHPCommentsBuilder
                 $line = '';
             }
         } while (strlen($line) > 0);
-        
+
         return $comment;
     }
 }

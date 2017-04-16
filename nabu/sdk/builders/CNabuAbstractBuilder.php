@@ -35,7 +35,7 @@ abstract class CNabuAbstractBuilder extends CNabuObject implements INabuBuilder
      * @var CNabuAbstractBuilder
      */
     private $container = null;
-    
+
     /**
      * Entire code generated
      * @var string
@@ -56,35 +56,35 @@ abstract class CNabuAbstractBuilder extends CNabuObject implements INabuBuilder
      * Abstract method to create the descriptor in the first line of a file
      * @return string Return the descriptor string
      */
-    abstract protected function getDescriptor();
+    abstract protected function getDescriptor() : string;
     /**
      * Abstract method to create the license text.
      * @param string $padding Sequence of characters to place before each line
      * of the license.
      * @return string Return the license string.
      */
-    abstract protected function getLicense($padding = '');
+    abstract protected function getLicense(string $padding = '') : string;
     /**
      * Create the comments section.
      * @param string $padding Sequence of characters to place before each line
      * of the comments.
      * @return string Return the comments string.
      */
-    abstract protected function getComments($padding = '');
+    abstract protected function getComments(string $padding = '') : string;
     /**
      * Abstract method to create the header section.
      * @param string $padding Sequence of characters to place before each line
      * of the header.
      * @return string Return the header string.
      */
-    abstract protected function getHeader($padding = '');
+    abstract protected function getHeader(string $padding = '') : string;
     /**
      * Abstract method to create the footer section.
      * @param string $padding Sequence of characters to place before each line
      * of the footer.
      * @return string Return the footer string.
      */
-    abstract protected function getFooter($padding = '');
+    abstract protected function getFooter(string $padding = '') : string;
 
     public function __construct(CNabuAbstractBuilder $container = null)
     {
@@ -97,7 +97,7 @@ abstract class CNabuAbstractBuilder extends CNabuObject implements INabuBuilder
      * Gets the Container instance.
      * @return CNabuAbstractBuilder Returns the assigned Container if any or null elsewhere.
      */
-    public function getContainer()
+    public function getContainer() : CNabuAbstractBuilder
     {
         return $this->container;
     }
@@ -106,7 +106,7 @@ abstract class CNabuAbstractBuilder extends CNabuObject implements INabuBuilder
      * Gets the Document instance. This instance is the root instance in containers tree.
      * @return CNabuAbstractBuilder Returns the Document.
      */
-    public function getDocument()
+    public function getDocument() : CNabuAbstractBuilder
     {
         return ($this->container === null ? $this : $this->container->getDocument());
     }
@@ -117,7 +117,7 @@ abstract class CNabuAbstractBuilder extends CNabuObject implements INabuBuilder
      * of the content.
      * @return string Return the content string.
      */
-    protected function getContent($padding = '')
+    protected function getContent(string $padding = '') : string
     {
         $content = '';
 
@@ -153,7 +153,7 @@ abstract class CNabuAbstractBuilder extends CNabuObject implements INabuBuilder
      * @param string $comment
      * @return bool Returns true always.
      */
-    public function addComment($comment)
+    public function addComment(string $comment) : bool
     {
         if (is_string($comment)) {
             $this->comments[] = $comment;
@@ -168,7 +168,7 @@ abstract class CNabuAbstractBuilder extends CNabuObject implements INabuBuilder
      * of code.
      * @return string Return the code as string.
      */
-    public function create($padding = '')
+    public function create(string $padding = '') : string
     {
         $this->code = $this->getDescriptor($padding)
                     . $this->getLicense($padding)
@@ -187,7 +187,7 @@ abstract class CNabuAbstractBuilder extends CNabuObject implements INabuBuilder
      * an empty string.
      * @return string Return the code represented by this instance.
      */
-    public function getCode()
+    public function getCode() : string
     {
         return $this->code;
     }
@@ -196,7 +196,7 @@ abstract class CNabuAbstractBuilder extends CNabuObject implements INabuBuilder
      * Exports the code to a file.
      * @param string $filename File name and path to create export file.
      */
-    public function exportToFile($filename)
+    public function exportToFile(string $filename)
     {
         if (($p = strrpos($filename, DIRECTORY_SEPARATOR)) >= 0) {
             $path = substr($filename, 0, $p);

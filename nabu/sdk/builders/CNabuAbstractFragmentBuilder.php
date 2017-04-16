@@ -43,7 +43,7 @@ abstract class CNabuAbstractFragmentBuilder extends CNabuAbstractBuilder
      * inherited from the base class.
      * @return string Return the descriptor string
      */
-    protected function getDescriptor()
+    protected function getDescriptor() : string
     {
         return '';
     }
@@ -55,7 +55,7 @@ abstract class CNabuAbstractFragmentBuilder extends CNabuAbstractBuilder
      * of the license.
      * @return string Return the license string.
      */
-    protected function getLicense($padding = '')
+    protected function getLicense(string $padding = '') : string
     {
         return '';
     }

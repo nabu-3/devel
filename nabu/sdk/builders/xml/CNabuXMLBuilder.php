@@ -43,7 +43,7 @@ class CNabuXMLBuilder extends CNabuAbstractBuilder
      * @param string $padding This parameter is ignored in this implementation
      * @return string Returns an empty ('') string
      */
-    protected function getComments($padding = '')
+    protected function getComments(string $padding = '') : string
     {
         return '';/* "<!-- Comment to test XML Builder -->\n"; */
     }
@@ -52,7 +52,7 @@ class CNabuXMLBuilder extends CNabuAbstractBuilder
      * Overrides parent method to return an empty string
      * @return string Returns an empty ('') string
      */
-    protected function getDescriptor()
+    protected function getDescriptor() : string
     {
         return '';/* "<?xml version=\"1.0\"?>\n"; */
     }
@@ -62,7 +62,7 @@ class CNabuXMLBuilder extends CNabuAbstractBuilder
      * @param string $padding This parameter is ignored in this implementation
      * @return string Returns an empty ('') string
      */
-    protected function getFooter($padding = '')
+    protected function getFooter(string $padding = '') : string
     {
         return '';
     }
@@ -72,7 +72,7 @@ class CNabuXMLBuilder extends CNabuAbstractBuilder
      * @param string $padding This parameter is ignored in this implementation
      * @return string Returns an empty ('') string
      */
-    protected function getHeader($padding = '')
+    protected function getHeader(string $padding = '') : string
     {
         return '';
     }
@@ -82,12 +82,12 @@ class CNabuXMLBuilder extends CNabuAbstractBuilder
      * @param string $padding This parameter is ignored in this implementation
      * @return string Returns an empty ('') string
      */
-    protected function getLicense($padding = '')
+    protected function getLicense(string $padding = '') : string
     {
         return '';
     }
 
-    protected function getContent($padding = '')
+    protected function getContent(string $padding = '') : string
     {
         $value = '';
 
@@ -104,7 +104,7 @@ class CNabuXMLBuilder extends CNabuAbstractBuilder
         }
 
         $str = $root->asXML();
-        
+
         return ($str === false ? '' : str_replace(array('&lt;![CDATA[', ']]&gt;'), array('<![CDATA[', ']]>'), $str));
     }
 }

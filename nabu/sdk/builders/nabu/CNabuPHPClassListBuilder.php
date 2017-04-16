@@ -18,6 +18,7 @@
  */
 
 namespace nabu\sdk\builders\nabu;
+use nabu\db\interfaces\INabuDBConnector;
 use nabu\sdk\builders\CNabuAbstractBuilder;
 use nabu\sdk\builders\nabu\base\CNabuPHPClassTableAbstractBuilder;
 use nabu\sdk\builders\php\CNabuPHPMethodBuilder;
@@ -34,26 +35,16 @@ use nabu\db\interfaces\INabuDBDescriptor;
  */
 class CNabuPHPClassListBuilder extends CNabuPHPClassTableAbstractBuilder
 {
-    /**
-     * Class name of each item.
-     * @var string
-     */
+    /** @var string $item_class_name Class name of each item. */
     private $item_class_name = null;
-    /**
-     * Entity name of each item.
-     * @var string
-     */
+    /** @var string $item_entity_name Entity name of each item. */
     private $item_entity_name = null;
-    /**
-     * Field name to act as ID of the list.
-     * @var string
-     */
+    /** @var string $table_field_id Field name to act as ID of the list. */
     private $table_field_id = null;
-    /**
-     * Flag to determine if we have a secondary index by key.
-     * @var bool
-     */
+    /** @var bool $have_key_index Flag to determine if we have a secondary index by key. */
     private $have_key_index = false;
+    /** @var string $since_version Since version for comments. */
+    private $since_version = null;
 
     /**
      * The constructor checks if all parameters have valid values, and throws an exception if not.
@@ -65,17 +56,21 @@ class CNabuPHPClassListBuilder extends CNabuPHPClassTableAbstractBuilder
      * @param string $item_class_name Class name of each item.
      * @param string $item_entity_name Entity name of each item.
      * @param bool $abstract Defines if the class is abstract or not.
+     * @param string $since_version Since version for comments.
      * @throws ENabuCoreException Throws an exception if some parameter is not valid.
      */
     public function __construct(
         CNabuAbstractBuilder $container,
-        INabuDBDescriptor $table_desc,
-        $namespace,
-        $name,
-        $entity_name,
-        $item_class_name,
-        $item_entity_name,
-        $abstract = false
+        INabuDBConnector $connector,
+        string $namespace,
+        string $name,
+        string $entity_name,
+        string $item_class_name,
+        string $item_entity_name,
+        string $table_name,
+        string $schema_name,
+        bool $abstract = false,
+        string $since_version = null
     ) {
         if (strlen($item_class_name) === 0) {
             throw new ENabuCoreException(
@@ -93,8 +88,12 @@ class CNabuPHPClassListBuilder extends CNabuPHPClassTableAbstractBuilder
 
         $this->item_class_name = $item_class_name;
         $this->item_entity_name = $item_entity_name;
+        $this->since_version = $since_version;
 
-        parent::__construct($container, $table_desc, $namespace, $name, $entity_name, $abstract);
+        parent::__construct(
+            $container, $connector, $namespace, $name, $entity_name,
+            $table_name, $schema_name, $abstract
+        );
     }
 
     /**
@@ -147,6 +146,9 @@ class CNabuPHPClassListBuilder extends CNabuPHPClassTableAbstractBuilder
                                  . (is_string($author_name) ? ' ' . $author_name : '')
                                  . (is_string($author_email) ? " <$author_email>" : '')
                 );
+            }
+            if (is_string($this->since_version) && strlen($this->since_version) > 0) {
+                $this->addComment("@since $this->since_version");
             }
             $this->addComment("@version " . NABU_VERSION);
             $this->addComment("@package " . '\\' . $this->class_namespace);

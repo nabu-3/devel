@@ -31,48 +31,30 @@ use \nabu\sdk\builders\php\CNabuPHPMethodBuilder;
  */
 class CNabuPHPClassBuilder extends CNabuPHPFragmentBuilder
 {
-    /**
-     * Name of the class
-     * @var string
-     */
-    protected $name;
-    /**
-     * Class extended
-     * @var string
-     */
+    /** @var string $class_name Name of the class. */
+    protected $class_name;
+    /** @var string $extends Class name extended. */
     protected $extends;
-    /**
-     * Array with all implemented interfaces
-     * @var array
-     */
+    /** @var array $interface_list Array with all implemented interfaces. */
     protected $interface_list = array();
-    /**
-     * If true the class is abstract
-     * @var boolean
-     */
+    /** @var bool $abstract If true the class is abstract. */
     protected $abstract = false;
-    /**
-     * Array with all traits used to define the class
-     * @var array
-     */
+    /** @var array $use_list Array with all traits used to define the class. */
     protected $use_list = array();
-    /**
-     * Array with all methods defined in the class
-     * @var array
-     */
+    /** @var array $method_list Array with all methods defined in the class. */
     protected $method_list = array();
 
     /**
      * Creates an instance of this class.
      * @param CNabuAbstractBuilder $container Container builder object
      * @param string $name Name of the class
-     * @param boolean $abstract Defines if the class is abstract or not
+     * @param bool $abstract Defines if the class is abstract or not
      */
     public function __construct(CNabuAbstractBuilder $container, $name, $abstract = false)
     {
         parent::__construct($container);
 
-        $this->name = $name;
+        $this->class_name = $name;
         $this->abstract = $abstract;
     }
 
@@ -80,20 +62,20 @@ class CNabuPHPClassBuilder extends CNabuPHPFragmentBuilder
      * Gets the class name represented by this instance
      * @return string Returns the name of the class represented by this instance
      */
-    public function getName()
+    public function getClassName() : string
     {
-        return $this->name;
+        return $this->class_name;
     }
 
     /**
      * Overrides the parent method to return the class starting declaration.
      * The string built is of type "class <name> extends <parent class> implements <list of interfaces> {"
-     * @param type $padding Padding to place at the start of all lines
+     * @param string $padding Padding to place at the start of all lines
      * @return string Returns a string with the starting declaration of class
      */
-    protected function getHeader($padding = '')
+    protected function getHeader(string $padding = '') : string
     {
-        $output = $padding . ($this->abstract ? 'abstract ' : '') . "class $this->name"
+        $output = $padding . ($this->abstract ? 'abstract ' : '') . "class $this->class_name"
                 . (strlen($this->extends) ? " extends $this->extends" : '')
                 . (count($this->interface_list) > 0 ? " implements " . implode(', ', $this->interface_list) : '')
                 . "\n"
@@ -112,10 +94,10 @@ class CNabuPHPClassBuilder extends CNabuPHPFragmentBuilder
 
     /**
      * Overrides the parent method to remove leading spaces when not necessary.
-     * @param type $padding Padding to place at the start of all lines
+     * @param string $padding Padding to place at the start of all lines
      * @return string Returns a string with the content of class
      */
-    protected function getContent($padding = '')
+    protected function getContent(string $padding = '') : string
     {
         return preg_replace('/\\s+$/', "\n", parent::getContent($padding));
     }
@@ -123,10 +105,10 @@ class CNabuPHPClassBuilder extends CNabuPHPFragmentBuilder
     /**
      * Overrides the parent method to rethrn the class ending declaration.
      * The string built is the close key and a carriage return.
-     * @param type $padding Padding to place at the start of all lines
+     * @param string $padding Padding to place at the start of all lines
      * @return string Returns the close key of class declaration
      */
-    protected function getFooter($padding = '')
+    protected function getFooter(string $padding = '') : string
     {
         return $padding . "}";
     }
@@ -135,7 +117,7 @@ class CNabuPHPClassBuilder extends CNabuPHPFragmentBuilder
      * Gets the parent (extended) class
      * @return string Returns the extended class if defined of null if not
      */
-    public function getExtends()
+    public function getExtends() : string
     {
         return $this->extends;
     }
@@ -143,10 +125,13 @@ class CNabuPHPClassBuilder extends CNabuPHPFragmentBuilder
     /**
      * Set the name (and path if required) of the extended class
      * @param string $extends Name of extended class
+     * @return CNabuPHPClassBuilder Returns self instance to grant chained setters call.
      */
-    public function setExtends($extends)
+    public function setExtends(string $extends) : CNabuPHPClassBuilder
     {
         $this->extends = $extends;
+
+        return $this;
     }
 
     /**
@@ -154,7 +139,7 @@ class CNabuPHPClassBuilder extends CNabuPHPFragmentBuilder
      * @return array Returns an array with the list of implemented interfaces
      * or an empty array if no interfaces are defined
      */
-    public function getInterfaces()
+    public function getInterfaces() : array
     {
         return $this->interface_list;
     }
@@ -162,9 +147,9 @@ class CNabuPHPClassBuilder extends CNabuPHPFragmentBuilder
     /**
      * Add an interface to the class declaration. If interface already exists then the action is ignored
      * @param string $interface Name of interface to be added
-     * @return boolean Return true if $interface is added of false if it already exists
+     * @return bool Return true if $interface is added of false if it already exists
      */
-    public function addInterface($interface)
+    public function addInterface(string $interface) : bool
     {
         $retval = false;
 
@@ -181,17 +166,17 @@ class CNabuPHPClassBuilder extends CNabuPHPFragmentBuilder
      * @return array Returns an array with the list of used traits
      * or an empty array if no traits are defined
      */
-    public function getUses()
+    public function getUses() : array
     {
         return $this->use_list;
     }
 
     /**
      * Add a trait to the class declaration. If trait already exists then the action is ignored
-     * @param type $use Name of trait to be added
-     * @return boolean Return true if $use is added or false if it already exists
+     * @param string $use Name of trait to be added
+     * @return bool Return true if $use is added or false if it already exists
      */
-    public function addUse($use)
+    public function addUse(string $use) : bool
     {
         $retval = false;
 
@@ -207,17 +192,17 @@ class CNabuPHPClassBuilder extends CNabuPHPFragmentBuilder
      * Gets the list of all implemented methods. Each method is of class CNabuPHPMethodBuilder or descendant.
      * @return array Returns the collection of methods implemented in this class.
      */
-    public function getMethods()
+    public function getMethods() : array
     {
         return $this->method_list;
     }
 
     /**
      * Add a method to the class
-     * @param \nabu\core\builders\php\CNabuPHPMethodBuilder $method Method instance to be added
-     * @return boolean Returns true if the method is added or false if already exists
+     * @param CNabuPHPMethodBuilder $method Method instance to be added
+     * @return bool Returns true if the method is added or false if already exists
      */
-    public function addMethod(CNabuPHPMethodBuilder $method)
+    public function addMethod(CNabuPHPMethodBuilder $method) : bool
     {
         $retval = false;
         $name = $method->getName();

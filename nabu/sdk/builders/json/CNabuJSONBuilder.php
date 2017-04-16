@@ -24,7 +24,8 @@ use \nabu\sdk\builders\CNabuAbstractBuilder;
 /**
  * Main builder for JSON files
  * @author Rafael Gutierrez <rgutierrez@nabu-3.com>
- * @version 3.0.0 Surface
+ * @since 3.0.0 Surface
+ * @version 3.0.8 Surface
  */
 class CNabuJSONBuilder extends CNabuAbstractBuilder
 {
@@ -33,15 +34,15 @@ class CNabuJSONBuilder extends CNabuAbstractBuilder
      * @var array
      */
     private $json = null;
-    
+
     /**
      * Create a new instance. If $json is passed the instance represents JSON document contained in $json.
      * @param array $json
      */
-    public function __construct($json = null)
+    public function __construct(array $json = null)
     {
         parent::__construct();
-        
+
         $this->json = $json;
     }
 
@@ -50,57 +51,56 @@ class CNabuJSONBuilder extends CNabuAbstractBuilder
      * @param string $padding This parameter is ignored in this implementation
      * @return string Returns a string representing the encode JSON or false if error
      */
-    protected function getContent($padding = '')
+    protected function getContent(string $padding = '') : string
     {
         return json_encode($this->json, JSON_PRETTY_PRINT);
     }
-    
+
     /**
      * Overrides parent method to return an empty string
-     * @param type $padding This parameter is ignored in this implementation
+     * @param string $padding This parameter is ignored in this implementation
      * @return string Returns an empty ('') string
      */
-    protected function getComments($padding = '')
+    protected function getComments(string $padding = '') : string
     {
         return '';
     }
 
     /**
      * Overrides parent method to return an empty string
-     * @param type $padding This parameter is ignored in this implementation
      * @return string Returns an empty ('') string
      */
-    protected function getDescriptor()
+    protected function getDescriptor() : string
     {
         return '';
     }
 
     /**
      * Overrides parent method to return an empty string
-     * @param type $padding This parameter is ignored in this implementation
+     * @param string $padding This parameter is ignored in this implementation
      * @return string Returns an empty ('') string
      */
-    protected function getFooter($padding = '')
+    protected function getFooter(string $padding = '') : string
     {
         return '';
     }
 
     /**
      * Overrides parent method to return an empty string
-     * @param type $padding This parameter is ignored in this implementation
+     * @param string $padding This parameter is ignored in this implementation
      * @return string Returns an empty ('') string
      */
-    protected function getHeader($padding = '')
+    protected function getHeader(string $padding = '') : string
     {
         return '';
     }
 
     /**
      * Overrides parent method to return an empty string
-     * @param type $padding This parameter is ignored in this implementation
+     * @param string $padding This parameter is ignored in this implementation
      * @return string Returns an empty ('') string
      */
-    protected function getLicense($padding = '')
+    protected function getLicense(string $padding = '') : string
     {
         return '';
     }

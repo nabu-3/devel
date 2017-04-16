@@ -18,6 +18,9 @@
  */
 
 namespace nabu\sdk\builders\nabu\base;
+use nabu\db\exceptions\ENabuDBException;
+use nabu\db\interfaces\INabuDBConnector;
+use nabu\db\interfaces\INabuDBSyntaxBuilder;
 use nabu\sdk\builders\CNabuAbstractBuilder;
 use nabu\sdk\builders\php\CNabuPHPClassBuilder;
 use nabu\core\exceptions\ENabuCoreException;
@@ -38,10 +41,16 @@ class CNabuPHPClassTableAbstractBuilder extends CNabuPHPClassBuilder
     protected $class_namespace = null;
     /** @var string $table_name Name of the table. */
     protected $table_name = null;
+    /** @var string $schema_name Name of the schema. */
+    protected $schema_name = null;
+    /** @var string $translated_table Main translated table name. */
+    protected $translated_table = null;
     /** @var bool $is_translated Flag to determine if entity have translations. */
     protected $is_translated = false;
     /** @var bool $is_translation Flag to determine if entity are translations. */
     protected $is_translation = false;
+    /** @var bool $is_hashed Flag to determine if table have a hash field. */
+    protected $is_hashed = false;
     /** @var bool $is_customer_child Flag to determine if entity is a Customer child entity. */
     protected $is_customer_child = false;
     /** @var bool $is_customer_foreign Flag to determine if entity is a Customer foreign entity. */
@@ -82,10 +91,18 @@ class CNabuPHPClassTableAbstractBuilder extends CNabuPHPClassBuilder
     protected $is_role_child = false;
     /** @var bool $is_role_foreign Flag to determine if is a Role foreign entity. */
     protected $is_role_foreign = false;
+
     /** @var array $dictionary Dictionary for table to entity conversion names. */
     protected $dictionary = false;
+
+    /** @var INabuDBConnector $connector Database connector instance. */
+    private $connector = null;
+    /** @var INabuDBSyntaxBuilder $db_syntax Database Syntax Builder. */
+    private $db_syntax = null;
     /** @var INabuDBDescriptor $table_descriptor Table descriptor in array raw format. */
     private $table_descriptor = null;
+    /** @var string $translated_desc Main translated table descriptor. */
+    private $translated_desc = null;
 
     /**
      * The constructor checks if all parameters have valid values, and throws an exception if not.
@@ -99,11 +116,13 @@ class CNabuPHPClassTableAbstractBuilder extends CNabuPHPClassBuilder
      */
     public function __construct(
         CNabuAbstractBuilder $container,
-        INabuDBDescriptor $table_descriptor,
-        $namespace,
-        $name,
-        $entity_name,
-        $abstract
+        INabuDBConnector $connector,
+        string $namespace,
+        string $name,
+        string $entity_name,
+        string $table,
+        string $schema = null,
+        bool $abstract = false
     ) {
         parent::__construct($container, $name, $abstract);
 
@@ -123,7 +142,17 @@ class CNabuPHPClassTableAbstractBuilder extends CNabuPHPClassBuilder
 
         $this->class_namespace = $namespace;
         $this->entity_name = $entity_name;
-        $this->table_descriptor = $table_descriptor;
+
+        $this->table_name = $table;
+        $this->schema_name = $schema;
+
+        $this->connector = $connector;
+        $this->db_syntax = $this->connector->getSyntaxBuilder();
+        $this->table_descriptor = $this->db_syntax->describeStorage($this->table_name, $this->schema_name);
+
+        if (!$this->table_descriptor) {
+            throw new ENabuDBException(ENabuDBException::ERROR_STORAGE_DESCRIPTOR_NOT_AVAILABLE);
+        }
 
         if (!$this->checkTable()) {
             throw new ENabuCoreException(ENabuCoreException::ERROR_CLASS_CANNOT_BE_BUILT, array($this->name));
@@ -132,11 +161,16 @@ class CNabuPHPClassTableAbstractBuilder extends CNabuPHPClassBuilder
         $this->checkSecondaryConstraints();
     }
 
+    /**
+     * Dump in the error stream all statuses of this object.
+     * @param string $padding Default padding to insert before each line dumped.
+     */
     public function dumpStatus($padding)
     {
         error_log("");
         error_log($padding . "Translated: " . ($this->is_translated ? 'YES' : 'NO'));
         error_log($padding . "Translation: " . ($this->is_translation ? 'YES' : 'NO'));
+        error_log($padding . "Hash: " . ($this->is_hashed ? 'YES' : 'NO'));
         error_log($padding . "Customer Child: " . ($this->is_customer_child ? 'YES' : 'NO'));
         error_log($padding . "Customer Foreign: " . ($this->is_customer_foreign ? 'YES' : 'NO'));
         error_log($padding . "Commerce Child: " . ($this->is_commerce_child ? 'YES' : 'NO'));
@@ -179,11 +213,20 @@ class CNabuPHPClassTableAbstractBuilder extends CNabuPHPClassBuilder
 
     /**
      * Get the Storage Descriptor of the table.
-     * @return INabuDBDescriptor Returns the descriptor instance if exists or false if not.
+     * @return INabuDBDescriptor Returns the descriptor instance if exists or null if not.
      */
-    public function getStorageDescriptor()
+    public function getStorageDescriptor() : INabuDBDescriptor
     {
         return $this->table_descriptor;
+    }
+
+    /**
+     * Get the Storage Descriptor of the translated table.
+     * @return INabuDBDescriptor Returns the descriptor instance if exists or null if not.
+     */
+    public function getTranslatedDescriptor() : INabuDBDescriptor
+    {
+        return $this->translated_desc;
     }
 
     /**
@@ -287,5 +330,83 @@ class CNabuPHPClassTableAbstractBuilder extends CNabuPHPClassBuilder
             !$this->table_descriptor->hasPrimaryConstraintField($field) &&
             $this->table_descriptor->hasSecondaryConstraintWithFields(array($field))
         ;
+    }
+
+    /**
+     * Check if the table is a translated table (have lang sub tables).
+     * @return bool Returns true if is a translated table.
+     */
+    protected function checkForTranslatedTable() : bool
+    {
+        $main_table = $this->getStorageDescriptor();
+        if (!nb_strEndsWith($this->table_name, NABU_LANG_TABLE_SUFFIX) &&
+            $main_table->hasPrimaryConstraint() &&
+            ($child_table = $this->db_syntax->describeStorage(
+                $this->table_name . NABU_LANG_TABLE_SUFFIX, $this->schema_name)
+            ) !== null &&
+            $child_table->hasPrimaryConstraint() &&
+            $child_table->getPrimaryConstraintSize() === $main_table->getPrimaryConstraintSize() + 1
+        ) {
+            $key_diff = array_diff(
+                $child_table->getPrimaryConstraintFieldNames(),
+                $main_table->getPrimaryConstraintFieldNames()
+            );
+            $this->is_translated = (count($key_diff) === 1 && array_shift($key_diff) === NABU_LANG_FIELD_ID);
+        }
+
+        return $this->is_translated;
+    }
+
+    /**
+     * Check if the table is a translation of a main table (is a lang sub table).
+     * @return bool Returns true if is a translation table.
+     */
+    protected function checkForTranslationTable() : bool
+    {
+        if (nb_strEndsWith($this->table_name, NABU_LANG_TABLE_SUFFIX)) {
+            $table_descriptor = $this->getStorageDescriptor();
+            $this->translated_table = substr($this->table_name, 0, strlen($this->table_name) - strlen(NABU_LANG_TABLE_SUFFIX));
+            if ($table_descriptor->hasPrimaryConstraint() &&
+                ($this->translated_desc = $this->db_syntax->describeStorage($this->translated_table, $this->schema_name)) &&
+                $this->translated_desc->getPrimaryConstraintSize() + 1 === $table_descriptor->getPrimaryConstraintSize()
+            ) {
+                $key_diff = array_diff(
+                    $table_descriptor->getPrimaryConstraintFieldNames(),
+                    $this->translated_desc->getPrimaryConstraintFieldNames()
+                );
+                $this->is_translation = (count($key_diff) === 1 && array_shift($key_diff) === NABU_LANG_FIELD_ID);
+            }
+        } else {
+            $this->is_translation = false;
+        }
+
+        return $this->is_translation;
+    }
+
+    /**
+     * Check if the table is a master of translations table.
+     * @return bool Returns true if it is master and false if not.
+     */
+    public function isTranslatedTable()
+    {
+        return $this->is_translated;
+    }
+
+    /**
+     * Check if the table is a translations table.
+     * @return bool Returns true if table is a translations table and false if not.
+     */
+    public function isTranslationsTable()
+    {
+        return $this->is_translation;
+    }
+
+    /**
+     * Check if the table have a hash field.
+     * @return bool Returns true if is a hashed table.
+     */
+    protected function checkForHashField() : bool
+    {
+        return ($this->is_hashed = $this->table_descriptor->hasField($this->table_name . '_hash'));
     }
 }

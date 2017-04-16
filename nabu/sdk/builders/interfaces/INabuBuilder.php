@@ -32,7 +32,7 @@ interface INabuBuilder
      * of code.
      * @return string Return the code as string.
      */
-    public function create($padding = '');
+    public function create(string $padding = '') : string;
 
     /**
      * Return the code represented by this instance.
@@ -40,11 +40,11 @@ interface INabuBuilder
      * an empty string.
      * @return string Return the code represented by this instance.
      */
-    public function getCode();
+    public function getCode() : string;
 
     /**
      * Exports generated code to a file.
      * @param string $filename File name including full path.
      */
-    public function exportToFile($filename);
+    public function exportToFile(string $filename);
 }

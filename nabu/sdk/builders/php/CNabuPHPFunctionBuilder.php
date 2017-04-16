@@ -75,7 +75,7 @@ class CNabuPHPFunctionBuilder extends CNabuPHPFragmentBuilder
      * Gets the parameters array of the function.
      * @return array Returns defined parameters as array.
      */
-    public function getParams()
+    public function getParams() : array
     {
         return $this->params;
     }
@@ -98,7 +98,7 @@ class CNabuPHPFunctionBuilder extends CNabuPHPFragmentBuilder
         $def_value = null,
         string $comment_type = null,
         string $comment = null
-    ) {
+    ) : bool {
         $param = array('name' => $name);
         if ($type !== null) {
             $param['type'] = $type;
@@ -163,7 +163,7 @@ class CNabuPHPFunctionBuilder extends CNabuPHPFragmentBuilder
         return '';
     }
 
-    protected function getComments($padding = '')
+    protected function getComments(string $padding = '') : string
     {
         $comments = '';
         $ret_comment = '';
@@ -197,7 +197,7 @@ class CNabuPHPFunctionBuilder extends CNabuPHPFragmentBuilder
         return strlen($comments) === 0 ? '' : $padding . "/**\n" . $comments . $ret_comment . $padding . " */\n";
     }
 
-    protected function getHeader($padding = '')
+    protected function getHeader(string $padding = '') : string
     {
         $content = $padding . $this->getPrefix() . "function $this->name(";
 
@@ -228,7 +228,7 @@ class CNabuPHPFunctionBuilder extends CNabuPHPFragmentBuilder
         return $content;
     }
 
-    protected function getFooter($padding = '')
+    protected function getFooter(string $padding = '') : string
     {
         return "$padding}\n";
     }

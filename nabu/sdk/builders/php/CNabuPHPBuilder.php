@@ -60,7 +60,7 @@ class CNabuPHPBuilder extends CNabuAbstractBuilder
      * Overrides parent method to return the open paragraph of PHP
      * @return string Returns the descriptor init sequence
      */
-    protected function getDescriptor()
+    protected function getDescriptor() : string
     {
         return "<?php\n";
     }
@@ -70,10 +70,10 @@ class CNabuPHPBuilder extends CNabuAbstractBuilder
      * @param string $padding Padding to place at the beginning of each line
      * @return string Returns the license as a PHP comment string
      */
-    protected function getLicense($padding = '')
+    protected function getLicense(string $padding = '') : string
     {
         return "$padding/* ===========================================================================\n"
-             . "$padding * File generated automatically by Nabu-3.\n"
+             . "$padding * File generated automatically by nabu-3.\n"
              . "$padding * You can modify this file if you need to add more functionalities.\n"
              . "$padding * ---------------------------------------------------------------------------\n"
              . "$padding * Created: " . date('Y/m/d H:i:s e') . "\n"
@@ -87,7 +87,7 @@ class CNabuPHPBuilder extends CNabuAbstractBuilder
      * @param string $padding Padding to place at the beginning of each line
      * @return string Returns the header as a string
      */
-    protected function getHeader($padding = '')
+    protected function getHeader(string $padding = '') : string
     {
         $content = (strlen($this->ns) > 0 ? $padding . "namespace $this->ns;\n\n" : '');
 
@@ -107,7 +107,7 @@ class CNabuPHPBuilder extends CNabuAbstractBuilder
      * @param string $padding
      * @return string Returns an empty ('') string
      */
-    protected function getFooter($padding = '')
+    protected function getFooter(string $padding = '') : string
     {
         return '';
     }
@@ -116,7 +116,7 @@ class CNabuPHPBuilder extends CNabuAbstractBuilder
      * Gets the list of PHP use clauses included in this entity
      * @return array Returns an array with a list of PHP use clauses
      */
-    public function getUses()
+    public function getUses() : array
     {
         return $this->use_list;
     }
@@ -126,7 +126,7 @@ class CNabuPHPBuilder extends CNabuAbstractBuilder
      * @param string $used Object path and name to be used
      * @return bool Returns true if $used is added or false if already exists
      */
-    public function addUse($used)
+    public function addUse(string $used) : bool
     {
         $retval = false;
         if (array_search($used, $this->use_list) === false) {

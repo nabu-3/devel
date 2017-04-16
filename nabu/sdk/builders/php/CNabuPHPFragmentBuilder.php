@@ -31,7 +31,7 @@ abstract class CNabuPHPFragmentBuilder extends CNabuAbstractFragmentBuilder
 {
     use TNabuPHPCommentsBuilder;
 
-    protected function getContent($padding = '')
+    protected function getContent(string $padding = '') : string
     {
         return parent::getContent($padding . '    ');
     }
@@ -41,7 +41,7 @@ abstract class CNabuPHPFragmentBuilder extends CNabuAbstractFragmentBuilder
      * @param mixed $value Value to be converted.
      * @return string Returns a string representing the value converted.
      */
-    protected function valueToString($value)
+    protected function valueToString($value) : string
     {
         if ($value === null) {
             $def_value = 'null';
