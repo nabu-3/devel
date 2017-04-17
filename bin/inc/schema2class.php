@@ -439,7 +439,7 @@ createXML(
     'Site Target CTA Role',
     'role',
     array(
-        'nb_site_targt_cta_role_zone' => 'zone'
+        'nb_site_target_cta_role_zone' => 'zone'
     ),
     null,
     null,
@@ -465,6 +465,36 @@ createEntity(
     'Site Map',
     true,
     $dictionary
+);
+createXML(
+    'nb_site_map',
+    'nabu\xml\site\base',
+    'CNabuXMLSiteMapBase',
+    'Site Map',
+    'map',
+    array(
+        'nb_site_map_key' => 'key',
+        'nb_site_map_order' => 'order',
+        'nb_site_map_customer_required' => 'customerRequired',
+        'nb_site_map_open_popup' => 'openPopup',
+        'nb_site_map_visible' => 'visible',
+        'nb_site_map_separator' => 'separator',
+    ),
+    null,
+    array(
+        'nb_site_map_lang_translation_status' => 'status',
+        'nb_site_map_lang_image' => 'image'
+    ),
+    array(
+        'nb_site_map_lang_title' => 'title',
+        'nb_site_map_lang_subtitle' => 'subtitle',
+        'nb_site_map_lang_content' => 'content'
+    ),
+    'nabu\data\site',
+    'CNabuSiteMap',
+    true,
+    $dictionary,
+    '3.0.12 Surface'
 );
 createEntity(
     'nb_site_map_role',
