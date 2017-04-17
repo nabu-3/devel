@@ -504,6 +504,24 @@ createEntity(
     true,
     $dictionary
 );
+createXML(
+    'nb_site_map_role',
+    'nabu\xml\site\base',
+    'CNabuXMLSiteMapRoleBase',
+    'Site Map Role',
+    'role',
+    array(
+        'nb_site_map_role_zone' => 'zone'
+    ),
+    null,
+    null,
+    null,
+    'nabu\data\site',
+    'CNabuSiteMapRole',
+    true,
+    $dictionary,
+    '3.0.12 Surface'
+);
 createEntity(
     'nb_site_static_content',
     'nabu\data\site\base',
