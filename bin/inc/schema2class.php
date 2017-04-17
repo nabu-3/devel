@@ -438,7 +438,9 @@ createXML(
     'CNabuXMLSiteTargetCTARoleBase',
     'Site Target CTA Role',
     'role',
-    null,
+    array(
+        'nb_site_targt_cta_role_zone' => 'zone'
+    ),
     null,
     null,
     null,
