@@ -530,6 +530,30 @@ createEntity(
     true,
     $dictionary
 );
+createXML(
+    'nb_site_static_content',
+    'nabu\xml\site\base',
+    'CNabuXMLSiteStaticContentBase',
+    'Site Static Content',
+    'staticContent',
+    array(
+        'nb_site_static_content_key' => 'key',
+        'nb_site_static_content_type' => 'type',
+        'nb_site_static_content_use_alternative' => 'alternative'
+    ),
+    array(
+        'nb_site_static_content_notes' => 'notes'
+    ),
+    null,
+    array(
+        'nb_site_static_content_lang_text' => 'text'
+    ),
+    'nabu\data\site',
+    'CNabuSiteStaticContent',
+    true,
+    $dictionary,
+    '3.0.12 Surface'
+);
 createEntity(
     'nb_site_role',
     'nabu\data\site\base',
