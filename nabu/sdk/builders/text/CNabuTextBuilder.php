@@ -24,7 +24,8 @@ use \nabu\sdk\builders\CNabuAbstractBuilder;
 /**
  * Main builder for text files
  * @author Rafael Gutierrez <rgutierrez@nabu-3.com>
- * @version 3.0.0 Surface
+ * @since 3.0.0 Surface
+ * @version 3.0.8 Surface
  */
 class CNabuTextBuilder extends CNabuAbstractBuilder
 {
@@ -46,7 +47,16 @@ class CNabuTextBuilder extends CNabuAbstractBuilder
      * @param string $padding This parameter is ignored in this implementation
      * @return string Returns an empty ('') string
      */
-    protected function getComments($padding = '')
+    protected function getComments(string $padding = '') : string
+    {
+        return '';
+    }
+
+    /**
+     * Overrides parent method to return an empty string
+     * @return string Returns an empty ('') string
+     */
+    protected function getDescriptor() : string
     {
         return '';
     }
@@ -56,7 +66,7 @@ class CNabuTextBuilder extends CNabuAbstractBuilder
      * @param string $padding This parameter is ignored in this implementation
      * @return string Returns an empty ('') string
      */
-    protected function getDescriptor()
+    protected function getFooter(string $padding = '') : string
     {
         return '';
     }
@@ -66,7 +76,7 @@ class CNabuTextBuilder extends CNabuAbstractBuilder
      * @param string $padding This parameter is ignored in this implementation
      * @return string Returns an empty ('') string
      */
-    protected function getFooter($padding = '')
+    protected function getHeader(string $padding = '') : string
     {
         return '';
     }
@@ -76,17 +86,7 @@ class CNabuTextBuilder extends CNabuAbstractBuilder
      * @param string $padding This parameter is ignored in this implementation
      * @return string Returns an empty ('') string
      */
-    protected function getHeader($padding = '')
-    {
-        return '';
-    }
-
-    /**
-     * Overrides parent method to return an empty string
-     * @param string $padding This parameter is ignored in this implementation
-     * @return string Returns an empty ('') string
-     */
-    protected function getLicense($padding = '')
+    protected function getLicense(string $padding = '') : string
     {
         return '';
     }
