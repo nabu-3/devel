@@ -202,7 +202,7 @@ abstract class CNabuAbstractBuilder extends CNabuObject implements INabuBuilder
             $path = substr($filename, 0, $p);
             $name = substr($filename, $p + 1);
 
-            if (!is_dir($path)) {
+            if (strlen($path) > 0 && !is_dir($path)) {
                 mkdir($path, 0755, true);
             }
         }
