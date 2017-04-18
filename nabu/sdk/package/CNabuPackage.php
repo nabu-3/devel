@@ -28,9 +28,14 @@ use nabu\data\security\CNabuRoleList;
 use nabu\data\site\CNabuSite;
 use nabu\data\site\CNabuSiteList;
 use nabu\sdk\builders\xml\CNabuXMLBuilder;
+use nabu\sdk\builders\zip\CNabuZipFile;
+use nabu\sdk\builders\zip\CNabuZipBuilder;
 use nabu\xml\lang\CNabuXMLLanguageList;
 use nabu\xml\security\CNabuXMLRoleList;
 use nabu\xml\site\CNabuXMLSiteList;
+
+/** @var string NABU_PACKAGE_FILE_EXT nabu-3 Package file extension. */
+define ('NABU_PACKAGE_FILE_EXT', 'nak');
 
 /**
  * This class manages a package distribution of nabu-3.
@@ -105,6 +110,9 @@ class CNabuPackage extends CNabuObject
 
     public function export(string $filename)
     {
+        $zip = new CNabuZipBuilder();
+        $unlink_files = array();
+
         if ($this->getObjectsCount() > 0) {
             $file = new CNabuXMLBuilder();
             if ($this->nb_language_list->getSize() > 0) {
@@ -117,7 +125,16 @@ class CNabuPackage extends CNabuObject
                 $file->addFragment(new CNabuXMLSiteList($this->nb_site_list));
             }
             $file->create();
-            $file->exportToFile($filename);
+            //$tempname = tempnam(sys_get_temp_dir(), 'nbpkg_xml_');
+            //$unlink_files[] = $tempname;
+            //$file->exportToFile($tempname);
+            $zip->addFragment(new CNabuZipFile(DIRECTORY_SEPARATOR, 'package.xml', $file));
+        }
+
+        $zip->exportToFile($filename);
+
+        foreach ($unlink_files as $filename) {
+            unlink($filename);
         }
     }
 }

@@ -80,7 +80,7 @@ class CNabuSDKExportApp extends CNabuCLIApplication
             echo "    ...adding Sites\n";
             $package->addSites($this->nb_site_list->getItems());
             echo "    ...exporting to package file\n";
-            $package->export('export.xml');
+            $package->export('export.nak');
             echo "    ...end export.\n";
         }
         return 0;
