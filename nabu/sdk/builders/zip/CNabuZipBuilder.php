@@ -60,11 +60,6 @@ class CNabuZipBuilder extends CNabuAbstractBuilder
         throw new ENabuCoreException(ENabuCoreException::ERROR_FEATURE_NOT_IMPLEMENTED);
     }
 
-    public function addFragment($fragment)
-    {
-        throw new ENabuCoreException(ENabuCoreException::ERROR_FEATURE_NOT_IMPLEMENTED);
-    }
-
     public function exportToFile(string $filename)
     {
         $zip = new ZipArchive();
@@ -74,12 +69,18 @@ class CNabuZipBuilder extends CNabuAbstractBuilder
                 foreach ($this->fragments as $file) {
                     $path = $file->getPath();
                     $internal = $file->getInternalName();
-                    $source = $file->getSource();
+                    $partname = $path . (strlen($path) > 0 ? DIRECTORY_SEPARATOR : '') . $internal;
                     $zip->addEmptyDir($path);
-                    if ($source instanceof CNabuAbstractBuilder) {
-                        $zip->addFromString($internal, $source->getCode());
-                    } elseif (is_string($source) && is_file($source) && file_exists($source)) {
-                        $zip->addFile($source, $internal);
+                    if ($file instanceof CNabuZipFile) {
+                        if (is_string($external = $file->getExternalName()) &&
+                            is_file($external) &&
+                            file_exists($external)
+                        ) {
+                            $zip->addFile($source, $partname);
+                        }
+                    } elseif ($file instanceof CNabuZipStream) {
+                        $stream = $file->getStream();
+                        $zip->addFromString($partname, $stream->getCode());
                     }
                 }
             }

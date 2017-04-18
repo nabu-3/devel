@@ -38,6 +38,8 @@ class CNabuSDKExportApp extends CNabuCLIApplication
     private $nb_customer = null;
     /** @var CNabuSiteList $nb_site_list List of sites to export. */
     private $nb_site_list = null;
+    /** @var string export_filename File name to save export. */
+    private $export_filename = 'nabu-3-dump.nak';
 
     public function prepareEnvironment()
     {
@@ -67,6 +69,11 @@ class CNabuSDKExportApp extends CNabuCLIApplication
                     }
                 }
             }
+            if (($count = count($this->arguments)) > 2 &&
+                !nb_strStartsWith($this->arguments[$count - 1], '-')
+            ) {
+                $this->export_filename = $this->arguments[$count - 1];
+            }
         } else {
             echo "Invalid customer [$nb_customer_id]";
         }
@@ -79,8 +86,8 @@ class CNabuSDKExportApp extends CNabuCLIApplication
             $package = new CNabuPackage($this->nb_customer);
             echo "    ...adding Sites\n";
             $package->addSites($this->nb_site_list->getItems());
-            echo "    ...exporting to package file\n";
-            $package->export('export.nak');
+            echo "    ...exporting to package file $this->export_filename\n";
+            $package->export($this->export_filename);
             echo "    ...end export.\n";
         }
         return 0;

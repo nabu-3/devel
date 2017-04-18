@@ -29,6 +29,7 @@ use nabu\data\site\CNabuSite;
 use nabu\data\site\CNabuSiteList;
 use nabu\sdk\builders\xml\CNabuXMLBuilder;
 use nabu\sdk\builders\zip\CNabuZipFile;
+use nabu\sdk\builders\zip\CNabuZipStream;
 use nabu\sdk\builders\zip\CNabuZipBuilder;
 use nabu\xml\lang\CNabuXMLLanguageList;
 use nabu\xml\security\CNabuXMLRoleList;
@@ -128,7 +129,7 @@ class CNabuPackage extends CNabuObject
             //$tempname = tempnam(sys_get_temp_dir(), 'nbpkg_xml_');
             //$unlink_files[] = $tempname;
             //$file->exportToFile($tempname);
-            $zip->addFragment(new CNabuZipFile(DIRECTORY_SEPARATOR, 'package.xml', $file));
+            $zip->addFragment(new CNabuZipStream($zip, 'data', 'package.xml', $file));
         }
 
         $zip->exportToFile($filename);

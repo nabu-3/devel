@@ -22,39 +22,39 @@ use nabu\sdk\builders\CNabuAbstractBuilder;
 use nabu\sdk\builders\zip\base\CNabuZipFragment;
 
 /**
- * File descriptor for ZIP builder
+ * Stream descriptor for ZIP builder
  * @author Rafael Gutierrez <rgutierrez@nabu-3.com>
  * @since 3.0.8 Surface
  * @version 3.0.8 Surface
  */
-class CNabuZipFile extends CNabuZipFragment
+class CNabuZipStream extends CNabuZipFragment
 {
-    /** @var string $external_name Name of original file. */
-    private $external_name = null;
+    /** @var CNabuAbstractBuilder $stream Nabu Builder treated as a stream. */
+    private $stream = null;
 
     /**
      * @param CNabuAbstractBuilder $container Container builder object.
      * @param string $path Path inside Zip file of this file.
      * @param string $internal_name File name inside Zip file.
-     * @param string $external_name Name of file outside the Zip with her original path included.
+     * @param CNabuAbstractBuilder $stream Stream to create a file inside the Zip with.
      */
     public function __construct(
         CNabuAbstractBuilder $container,
         string $path,
         string $internal_name,
-        string $external_name
+        CNabuAbstractBuilder $stream
     ) {
         parent::__construct($container, $path, $internal_name);
 
-        $this->external_name = $external_name;
+        $this->stream = $stream;
     }
 
     /**
-     * Gets the external file name with her full path.
-     * @return string Returns the external file name.
+     * Gets the stream.
+     * @return CNabuAbstractBuilder Returns the stream object.
      */
-    public function getExternalName(): string
+    public function getStream(): CNabuAbstractBuilder
     {
-        return $this->external_name;
+        return $this->stream;
     }
 }
