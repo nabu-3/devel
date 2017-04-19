@@ -20,6 +20,8 @@
 namespace nabu\sdk\builders\xml;
 use SimpleXMLElement;
 use \nabu\sdk\builders\CNabuAbstractBuilder;
+use nabu\core\exceptions\ENabuXMLException;
+use nabu\core\exceptions\ENabuCoreException;
 use nabu\xml\CNabuXMLObject;
 
 /**
@@ -89,16 +91,13 @@ class CNabuXMLBuilder extends CNabuAbstractBuilder
 
     protected function getContent(string $padding = '') : string
     {
-        $value = '';
+        $root = null;
 
-        $root = new SimpleXMLElement('<nabuPackage/>', LIBXML_PARSEHUGE);
-
-        if ($this->getDocument() === $this &&
-            count($this->fragments) > 0
-        ) {
+        if ($this->getDocument() === $this && count($this->fragments) > 0) {
             foreach ($this->fragments as $fragment) {
                 if ($fragment instanceof CNabuXMLObject) {
-                    $fragment->build($root);
+                    $root = $fragment->build();
+                    break;
                 }
             }
         }
@@ -106,5 +105,18 @@ class CNabuXMLBuilder extends CNabuAbstractBuilder
         $str = $root->asXML();
 
         return ($str === false ? '' : str_replace(array('&lt;![CDATA[', ']]&gt;'), array('<![CDATA[', ']]>'), $str));
+    }
+
+    public function addFragment($fragment)
+    {
+        if ($fragment instanceof CNabuXMLObject) {
+            if (count($this->fragments) === 0) {
+                parent::addFragment($fragment);
+            } else {
+                throw new ENabuXMLException(ENabuXMLException::ERROR_ONLY_ONE_ROOT);
+            }
+        } else {
+            throw new ENabuCoreException(ENabuCoreException::ERROR_OBJECT_EXPECTED, array(get_class($fragment)));
+        }
     }
 }

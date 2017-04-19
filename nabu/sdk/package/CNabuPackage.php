@@ -28,7 +28,6 @@ use nabu\data\security\CNabuRoleList;
 use nabu\data\site\CNabuSite;
 use nabu\data\site\CNabuSiteList;
 use nabu\sdk\builders\xml\CNabuXMLBuilder;
-use nabu\sdk\builders\zip\CNabuZipFile;
 use nabu\sdk\builders\zip\CNabuZipStream;
 use nabu\sdk\builders\zip\CNabuZipBuilder;
 use nabu\xml\lang\CNabuXMLLanguageList;
@@ -116,19 +115,18 @@ class CNabuPackage extends CNabuObject
 
         if ($this->getObjectsCount() > 0) {
             $file = new CNabuXMLBuilder();
+            $package = new CNabuXMLPackage($this->nb_customer);
             if ($this->nb_language_list->getSize() > 0) {
-                $file->addFragment(new CNabuXMLLanguageList($this->nb_language_list));
+                $package->setXMLLanguageList(new CNabuXMLLanguageList($this->nb_language_list));
             }
             if ($this->nb_role_list->getSize() > 0) {
-                $file->addFragment(new CNabuXMLRoleList($this->nb_role_list));
+                $package->setXMLRoleList(new CNabuXMLRoleList($this->nb_role_list));
             }
             if ($this->nb_site_list->getSize() > 0) {
-                $file->addFragment(new CNabuXMLSiteList($this->nb_site_list));
+                $package->setXMLSiteList(new CNabuXMLSiteList($this->nb_site_list));
             }
+            $file->addFragment($package);
             $file->create();
-            //$tempname = tempnam(sys_get_temp_dir(), 'nbpkg_xml_');
-            //$unlink_files[] = $tempname;
-            //$file->exportToFile($tempname);
             $zip->addFragment(new CNabuZipStream($zip, 'data', 'package.xml', $file));
         }
 
