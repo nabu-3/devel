@@ -30,7 +30,7 @@ use nabu\data\site\CNabuSiteList;
 use nabu\sdk\builders\xml\CNabuXMLBuilder;
 use nabu\sdk\builders\zip\CNabuZipStream;
 use nabu\sdk\builders\zip\CNabuZipBuilder;
-use nabu\sdk\readers\CNabuZipReader;
+use nabu\sdk\readers\zip\CNabuZipReader;
 use nabu\xml\lang\CNabuXMLLanguageList;
 use nabu\xml\security\CNabuXMLRoleList;
 use nabu\xml\site\CNabuXMLSiteList;

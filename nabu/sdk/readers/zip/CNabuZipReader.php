@@ -17,9 +17,9 @@
  *  limitations under the License.
  */
 
-namespace nabu\sdk\readers;
+namespace nabu\sdk\readers\zip;
 use ZipArchive;
-use nabu\sdk\CNabuAbstractReader;
+use nabu\sdk\readers\CNabuAbstractReader;
 
 /**
  * This class read a zip file and get each file inside him.
@@ -39,5 +39,7 @@ class CNabuZipReader extends CNabuAbstractReader
             }
             $zip->close();
         }
+
+        return true;
     }
 }

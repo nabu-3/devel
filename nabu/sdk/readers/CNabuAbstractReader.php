@@ -17,7 +17,7 @@
  *  limitations under the License.
  */
 
-namespace nabu\sdk;
+namespace nabu\sdk\readers;
 use nabu\core\CNabuObject;
 use nabu\sdk\readers\interfaces\INabuReader;
 
@@ -26,7 +26,7 @@ use nabu\sdk\readers\interfaces\INabuReader;
  * @author Rafael Gutierrez <rgutierrez@nabu-3.com>
  * @since 3.0.8 Surface
  * @version 3.0.8 Surface
- * @package nabu\sdk;
+ * @package nabu\sdk\readers;
  */
 abstract class CNabuAbstractReader extends CNabuObject implements INabuReader
 {
