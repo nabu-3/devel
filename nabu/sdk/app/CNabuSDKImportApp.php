@@ -20,6 +20,7 @@
 namespace nabu\sdk\app;
 use nabu\cli\app\CNabuCLIApplication;
 use nabu\data\customer\CNabuCustomer;
+use nabu\sdk\package\CNabuPackage;
 
 /**
  * Class based in CLI Application to manage SDK Import tool from the command line.
@@ -31,8 +32,10 @@ use nabu\data\customer\CNabuCustomer;
  */
 class CNabuSDKImportApp extends CNabuCLIApplication
 {
-    /** @var CNabuCustomer $nb_customer Customer that owns exported objects. */
+    /** @var CNabuCustomer $nb_customer Customer that owns imported objects. */
     private $nb_customer = null;
+    /** @var string import_filename File name to import. */
+    private $import_filename = 'nabu-3-dump.nak';
 
     public function prepareEnvironment()
     {
@@ -47,11 +50,24 @@ class CNabuSDKImportApp extends CNabuCLIApplication
 
         if ($this->nb_customer instanceof CNabuCustomer) {
             echo "Customer: $nb_customer_id\n";
+            if (($count = count($this->arguments)) > 1 &&
+                !nb_strStartsWith($this->arguments[$count - 1], '-')
+            ) {
+                $this->import_filename = $this->arguments[$count - 1];
+            }
         }
     }
 
     public function run()
     {
+        if (is_string($this->import_filename) &&
+            file_exists($this->import_filename) &&
+            $this->nb_customer instanceof CNabuCustomer
+        ) {
+            $package = new CNabuPackage($this->nb_customer);
+            $package->import($this->import_filename);
+        }
+
         return true;
     }
 }

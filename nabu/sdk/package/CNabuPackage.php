@@ -30,6 +30,7 @@ use nabu\data\site\CNabuSiteList;
 use nabu\sdk\builders\xml\CNabuXMLBuilder;
 use nabu\sdk\builders\zip\CNabuZipStream;
 use nabu\sdk\builders\zip\CNabuZipBuilder;
+use nabu\sdk\readers\CNabuZipReader;
 use nabu\xml\lang\CNabuXMLLanguageList;
 use nabu\xml\security\CNabuXMLRoleList;
 use nabu\xml\site\CNabuXMLSiteList;
@@ -100,7 +101,11 @@ class CNabuPackage extends CNabuObject
         return $this->getObjectsCount() - $count;
     }
 
-    public function getObjectsCount()
+    /**
+     * Get the number of root objects availables in the package.
+     * @return int Returns the count of objects.
+     */
+    public function getObjectsCount() : int
     {
         return $this->nb_language_list->getSize() +
                $this->nb_role_list->getSize() +
@@ -108,6 +113,10 @@ class CNabuPackage extends CNabuObject
         ;
     }
 
+    /**
+     * Export the package to a file and save it using the propietary NAK structure.
+     * @param string $filename File name to export package.
+     */
     public function export(string $filename)
     {
         $zip = new CNabuZipBuilder();
@@ -135,5 +144,15 @@ class CNabuPackage extends CNabuObject
         foreach ($unlink_files as $filename) {
             unlink($filename);
         }
+    }
+
+    /**
+     * Import the package from a file and store it in the database.
+     * @param string $filename File name of file to import.
+     */
+    public function import(string $filename)
+    {
+        $zip = new CNabuZipReader();
+        $zip->importFromFile($filename);
     }
 }
