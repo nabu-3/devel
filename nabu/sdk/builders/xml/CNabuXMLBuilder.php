@@ -18,7 +18,6 @@
  */
 
 namespace nabu\sdk\builders\xml;
-use SimpleXMLElement;
 use \nabu\sdk\builders\CNabuAbstractBuilder;
 use nabu\core\exceptions\ENabuXMLException;
 use nabu\core\exceptions\ENabuCoreException;

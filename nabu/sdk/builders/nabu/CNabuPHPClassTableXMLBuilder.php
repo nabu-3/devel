@@ -59,6 +59,7 @@ class CNabuPHPClassTableXMLBuilder extends CNabuPHPClassTableAbstractBuilder
      * @param string $entity_name Entity name. This value is used for comment purposes.
      * @param string $element_name XML Element name.
      * @param array $element_attributes Attributes to place directly in getAttributes() generated method.
+     * @param array $element_childs Childs to place directly in getChilds() generated method.
      * @param string $class_data_namespace Namespace of the instance data to be managed.
      * @param string $class_data_name Class name descending from CNabuDataObject of the instance data to be managed.
      * @param string $table_name Table name to be extracted.
@@ -148,11 +149,13 @@ class CNabuPHPClassTableXMLBuilder extends CNabuPHPClassTableAbstractBuilder
         }
 
         if (!$this->is_translation) {
+            $this->prepareGetAttributes();
             $this->prepareSetAttributes();
         } else {
             $this->prepareSetAttributesForTranslation();
         }
 
+        $this->prepareGetChilds();
         $this->prepareSetChilds();
 
         return true;
@@ -272,12 +275,41 @@ class CNabuPHPClassTableXMLBuilder extends CNabuPHPClassTableAbstractBuilder
     }
 
     /**
+     * Prepares the getAttributes method in case that is not a translation data entity.
+     */
+    private function prepareGetAttributes()
+    {
+        $fragment = new CNabuPHPMethodBuilder($this, 'getAttributes', CNabuPHPMethodBuilder::METHOD_PROTECTED);
+        $fragment->addComment("Get default attributes of $this->entity_name from XML Element.");
+        $fragment->addParam(
+            'element', 'SimpleXMLElement', false, null, 'SimpleXMLElement',
+            'XML Element to get attributes'
+        );
+
+        if ($this->is_hashed || is_array($this->element_attributes) && count($this->element_attributes) > 0) {
+            $fragment->addFragment('$this->getAttributesFromList($element, array(');
+            $count = count($this->element_attributes);
+            if ($this->is_hashed) {
+                $fragment->addFragment("    '{$this->table_name}_hash' => 'GUID'" . (--$count > 0 ? ',' : ''));
+            }
+            foreach ($this->element_attributes as $field => $attr) {
+                $fragment->addFragment("    '$field' => '$attr'" . (--$count > 0 ? ',' : ''));
+            }
+            $fragment->addFragment('), false);');
+        }
+
+        $this->getDocument()->addUse('\SimpleXMLElement');
+
+        $this->addFragment($fragment);
+    }
+
+    /**
      * Prepares the setAttributes method in case that is not a translation data entity.
      */
     private function prepareSetAttributes()
     {
         $fragment = new CNabuPHPMethodBuilder($this, 'setAttributes', CNabuPHPMethodBuilder::METHOD_PROTECTED);
-        $fragment->addComment("Set default attributes of $this->entity_name XML Element.");
+        $fragment->addComment("Set default attributes of $this->entity_name in XML Element.");
         $fragment->addParam(
             'element', 'SimpleXMLElement', false, null, 'SimpleXMLElement',
             'XML Element to set attributes'
@@ -332,6 +364,41 @@ class CNabuPHPClassTableXMLBuilder extends CNabuPHPClassTableAbstractBuilder
         }
 
         $fragment->addFragment('}');
+
+        $this->getDocument()->addUse('\SimpleXMLElement');
+
+        $this->addFragment($fragment);
+    }
+
+    /**
+     * Prepares the getChilds method.
+     */
+    private function prepareGetChilds()
+    {
+        $fragment = new CNabuPHPMethodBuilder($this, 'getChilds', CNabuPHPMethodBuilder::METHOD_PROTECTED);
+        $fragment->addComment("Get default childs of $this->entity_name from XML Element as Element > CDATA structure.");
+        $fragment->addParam(
+            'element', 'SimpleXMLElement', false, null, 'SimpleXMLElement',
+            'XML Element to get childs'
+        );
+
+        if ($this->is_translated) {
+            $fragment->addFragment(array(
+                'parent::getChilds($element)'
+            ));
+        }
+
+        if (is_array($this->element_childs) && count($this->element_childs) > 0) {
+            if ($this->is_translated) {
+                $fragment->addFragment('');
+            }
+            $fragment->addFragment('$this->getChildsAsCDATAFromList($element, array(');
+            $count = count($this->element_childs);
+            foreach ($this->element_childs as $field => $child) {
+                $fragment->addFragment("    '$field' => '$child'" . (--$count > 0 ? ',' : ''));
+            }
+            $fragment->addFragment('), false);');
+        }
 
         $this->getDocument()->addUse('\SimpleXMLElement');
 

@@ -40,7 +40,7 @@ class CNabuXMLPackage extends CNabuXMLDataObject
     /** @var CNabuXMLSiteList $xml_site_list List of Sites in the package. */
     private $xml_site_list = null;
 
-    public function __construct(CNabuCustomer $nb_customer)
+    public function __construct(CNabuCustomer $nb_customer = null)
     {
         parent::__construct($nb_customer);
     }

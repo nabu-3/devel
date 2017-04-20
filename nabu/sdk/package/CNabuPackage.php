@@ -167,9 +167,11 @@ class CNabuPackage extends CNabuObject implements INabuReaderWalker
 
     public function processSource(CNabuAbstractReader $reader): int
     {
-        echo __METHOD__;
         $raw_package = $reader->seekFragment('data/package.xml');
-        echo $raw_package;
+        if (strlen($raw_package) > 0) {
+            $package = new CNabuXMLPackage($this->nb_customer);
+            $package->parse($raw_package);
+        }
 
         return 1;
     }
