@@ -19,7 +19,9 @@
 
 namespace nabu\sdk\readers\zip;
 use ZipArchive;
+use nabu\core\exceptions\ENabuCoreException;
 use nabu\sdk\readers\CNabuAbstractReader;
+use nabu\sdk\readers\interfaces\INabuReaderWalker;
 
 /**
  * This class read a zip file and get each file inside him.
@@ -29,17 +31,59 @@ use nabu\sdk\readers\CNabuAbstractReader;
  */
 class CNabuZipReader extends CNabuAbstractReader
 {
-    public function importFromFile(string $filename): bool
-    {
-        $zip = new ZipArchive();
+    /** @var ZipArchive $zip ZIP class to manage opened files. */
+    private $zip = null;
 
-        if ($zip->open($filename)) {
-            for ($i = 0; $i < $zip->numFiles; $i++) {
-                echo print_r($zip->statIndex($i), true);
+    public function importFromFile(string $filename, INabuReaderWalker $walker = null): int
+    {
+        $numFiles = 0;
+        $this->zip = new ZipArchive();
+
+        if ($this->zip->open($filename)) {
+            switch ($walker->getWalkerMode()) {
+                case INabuReaderWalker::MODE_SEQUENTIAL:
+                    $numFiles = $this->processSequential($walker);
+                    break;
+                case INabuReaderWalker::MODE_DIRECT;
+                    $numFiles = $walker->processSource($this);
+                    break;
+                default:
+                    echo "Error in Walker Mode [" . $reader->getWalkerMode() . "]\n";
             }
-            $zip->close();
+            $this->zip->close();
+            $this->zip = null;
+        } else {
+            echo "Error opening file $filename\n";
         }
 
-        return true;
+        return $numFiles;
+    }
+
+    /**
+     * Process sequentially all files in the ZIP.
+     * @param INabuReaderWalker $walker Sequential Walker to be used in each file in the ZIP.
+     * @return int Returns the number of files processed.
+     */
+    private function processSequential(INabuReaderWalker $walker) : int
+    {
+        for ($i = 0; $i < $this->zip->numFiles; $i++) {
+            $walker->processFragment($this->zip->getFromIndex($i));
+        }
+
+        return $this->zip->numFiles;
+    }
+
+    public function seekFragment($pointer)
+    {
+        if (is_numeric($pointer) && $pointer >= 0 && $pointer < $this->zip->numFiles) {
+            return $this->zip->getFromIndex($pointer);
+        } elseif (is_string($pointer) && strlen($pointer) > 0) {
+            return $this->zip->getFromName($pointer);
+        } else {
+            throw new ENabuCoreException(
+                ENabuCoreException::ERROR_UNEXPECTED_PARAM_VALUE,
+                array('$pointer', var_export($pointer, true))
+            );
+        }
     }
 }

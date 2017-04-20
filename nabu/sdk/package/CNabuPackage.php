@@ -30,6 +30,8 @@ use nabu\data\site\CNabuSiteList;
 use nabu\sdk\builders\xml\CNabuXMLBuilder;
 use nabu\sdk\builders\zip\CNabuZipStream;
 use nabu\sdk\builders\zip\CNabuZipBuilder;
+use nabu\sdk\readers\CNabuAbstractReader;
+use nabu\sdk\readers\interfaces\INabuReaderWalker;
 use nabu\sdk\readers\zip\CNabuZipReader;
 use nabu\xml\lang\CNabuXMLLanguageList;
 use nabu\xml\security\CNabuXMLRoleList;
@@ -44,7 +46,7 @@ define ('NABU_PACKAGE_FILE_EXT', 'nak');
  * @since 3.0.8 Surface
  * @version 3.0.8 Surface
  */
-class CNabuPackage extends CNabuObject
+class CNabuPackage extends CNabuObject implements INabuReaderWalker
 {
     use TNabuCustomerChild;
 
@@ -55,14 +57,21 @@ class CNabuPackage extends CNabuObject
     /** @var CNabuSiteList $nb_site_list List of Sites to be included in this package. */
     private $nb_site_list = null;
 
-    public function __construct(CNabuCustomer $nb_customer)
+    public function __construct(CNabuCustomer $nb_customer = null)
     {
         parent::__construct();
 
-        $this->setCustomer($nb_customer);
+        if ($nb_customer !== null) {
+            $this->setCustomer($nb_customer);
+        }
         $this->nb_language_list = new CNabuLanguageList();
         $this->nb_role_list = new CNabuRoleList($nb_customer);
         $this->nb_site_list = new CNabuSiteList($nb_customer);
+    }
+
+    public function getWalkerMode(): int
+    {
+        return self::MODE_DIRECT;
     }
 
     /**
@@ -153,6 +162,15 @@ class CNabuPackage extends CNabuObject
     public function import(string $filename)
     {
         $zip = new CNabuZipReader();
-        $zip->importFromFile($filename);
+        $zip->importFromFile($filename, $this);
+    }
+
+    public function processSource(CNabuAbstractReader $reader): int
+    {
+        echo __METHOD__;
+        $raw_package = $reader->seekFragment('data/package.xml');
+        echo $raw_package;
+
+        return 1;
     }
 }

@@ -39,30 +39,30 @@ class CNabuSDKImportApp extends CNabuCLIApplication
 
     public function prepareEnvironment()
     {
-        $nb_customer_id = nbCLICheckOption('c', 'customer', ':', true);
+        $nb_customer_id = nbCLICheckOption('c', 'customer', '::', true);
 
         if (is_numeric($nb_customer_id)) {
             $nb_customer = new CNabuCustomer($nb_customer_id);
             if ($nb_customer->isFetched()) {
                 $this->nb_customer = $nb_customer;
             }
+            if ($this->nb_customer instanceof CNabuCustomer) {
+                echo "Customer: $nb_customer_id\n";
+            }
         }
 
-        if ($this->nb_customer instanceof CNabuCustomer) {
-            echo "Customer: $nb_customer_id\n";
-            if (($count = count($this->arguments)) > 1 &&
-                !nb_strStartsWith($this->arguments[$count - 1], '-')
-            ) {
-                $this->import_filename = $this->arguments[$count - 1];
-            }
+        if (($count = count($this->arguments)) > 1 &&
+            !nb_strStartsWith($this->arguments[$count - 1], '-')
+        ) {
+            $this->import_filename = $this->arguments[$count - 1];
         }
     }
 
     public function run()
     {
+        echo "$this->import_filename\n";
         if (is_string($this->import_filename) &&
-            file_exists($this->import_filename) &&
-            $this->nb_customer instanceof CNabuCustomer
+            file_exists($this->import_filename)
         ) {
             $package = new CNabuPackage($this->nb_customer);
             $package->import($this->import_filename);
