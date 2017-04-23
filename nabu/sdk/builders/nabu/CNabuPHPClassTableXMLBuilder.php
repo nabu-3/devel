@@ -137,7 +137,6 @@ class CNabuPHPClassTableXMLBuilder extends CNabuPHPClassTableAbstractBuilder
     {
         $this->prepareClassComments($author_name, $author_email);
         $this->prepareClassDeclaration();
-        $this->checkForHashField();
         $this->prepareConstructor();
 
         if (!$this->is_translation) {
@@ -147,6 +146,8 @@ class CNabuPHPClassTableXMLBuilder extends CNabuPHPClassTableAbstractBuilder
         if ($this->is_translated) {
             $this->prepareCreateXMLTranslationsObject();
         }
+
+        $this->prepareLocateDataObject();
 
         if (!$this->is_translation) {
             $this->prepareGetAttributes();
@@ -187,8 +188,6 @@ class CNabuPHPClassTableXMLBuilder extends CNabuPHPClassTableAbstractBuilder
 
         $this->addComment('@version ' . NABU_VERSION);
         $this->addComment("@package \\$this->class_namespace");
-
-        return true;
     }
 
     /**
@@ -196,6 +195,8 @@ class CNabuPHPClassTableXMLBuilder extends CNabuPHPClassTableAbstractBuilder
      */
     private function prepareClassDeclaration()
     {
+        $this->checkForHashField();
+
         if ($this->checkForTranslatedTable()) {
             $this->getDocument()->addUse('\nabu\xml\lang\CNabuXMLTranslated');
             $this->setExtends('CNabuXMLTranslated');
@@ -219,7 +220,7 @@ class CNabuPHPClassTableXMLBuilder extends CNabuPHPClassTableAbstractBuilder
         $fragment->addComment(
                 "Instantiates the class. Receives as parameter a qualified $this->class_data_name class.");
         $fragment->addParam(
-            $this->table_name, $this->class_data_name, false, null, $this->class_data_name,
+            $this->table_name, $this->class_data_name, true, null, $this->class_data_name,
             '$this->entity_name instance to be managed as XML'
         );
         $this->getDocument()->addUse('\\' . $this->class_data_namespace . '\\' . $this->class_data_name);
@@ -241,6 +242,52 @@ class CNabuPHPClassTableXMLBuilder extends CNabuPHPClassTableAbstractBuilder
         $fragment->addComment("@return string Return the Tag name.");
 
         $fragment->addFragment("return '$this->element';");
+
+        $this->addFragment($fragment);
+    }
+
+    /**
+     * Prepares the locateDataObjcet method.
+     */
+    private function prepareLocateDataObject()
+    {
+        $fragment = new CNabuPHPMethodBuilder(
+            $this, 'locateDataObject', CNabuPHPMethodBuilder::METHOD_PROTECTED,
+            false, false, false, true, 'bool'
+        );
+        $fragment->addComment("Locate a Data Object.");
+        $fragment->addComment("@return bool Returns true if the Data Object found or false if not.");
+
+        $fragment->addParam(
+            'element', 'SimpleXMLElement', false, null, 'SimpleXMLElement', 'Element to locate the Data Object.'
+        );
+        $fragment->addParam(
+            'data_parent', 'CNabuDataObject', true, null, 'CNabuDataObject', 'Data Parent object.'
+        );
+
+        $fragment->addFragment(array(
+            '$retval = false;',
+            '',
+            "if (isset(\$element['GUID'])) {",
+            "    \$guid = (string)\$element['GUID'];",
+            "    if (!(\$this->nb_data_object instanceof $this->class_data_name)) {",
+            "        \$this->nb_data_object = $this->class_data_name::findByHash(\$guid);",
+            '    } else {',
+            '        $this->nb_data_object = null;',
+            '    }',
+            '',
+            "    if (!(\$this->nb_data_object instanceof $this->class_data_name)) {",
+            "        \$this->nb_data_object = new $this->class_data_name();",
+            "        \$this->nb_data_object->setHash(\$guid);",
+            '    }',
+            '    $retval = true;',
+            '}',
+            '',
+            'return $retval;'
+        ));
+
+        $this->getDocument()->addUse('\nabu\data\CNabuDataObject');
+        $this->getDocument()->addUse("\\$this->class_data_namespace\\$this->class_data_name");
 
         $this->addFragment($fragment);
     }
@@ -289,9 +336,9 @@ class CNabuPHPClassTableXMLBuilder extends CNabuPHPClassTableAbstractBuilder
         if ($this->is_hashed || is_array($this->element_attributes) && count($this->element_attributes) > 0) {
             $fragment->addFragment('$this->getAttributesFromList($element, array(');
             $count = count($this->element_attributes);
-            if ($this->is_hashed) {
+            /*if ($this->is_hashed) {
                 $fragment->addFragment("    '{$this->table_name}_hash' => 'GUID'" . (--$count > 0 ? ',' : ''));
-            }
+            }*/
             foreach ($this->element_attributes as $field => $attr) {
                 $fragment->addFragment("    '$field' => '$attr'" . (--$count > 0 ? ',' : ''));
             }

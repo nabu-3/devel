@@ -171,6 +171,7 @@ class CNabuPackage extends CNabuObject implements INabuReaderWalker
         if (strlen($raw_package) > 0) {
             $package = new CNabuXMLPackage($this->nb_customer);
             $package->parse($raw_package);
+            $package->save();
         }
 
         return 1;

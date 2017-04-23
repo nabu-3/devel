@@ -90,6 +90,53 @@ class CNabuPHPClassTableBuilder extends CNabuPHPClassTableAbstractBuilder
      */
     public function prepare(string $author_name = null, string $author_email = null)
     {
+        $this->prepareClassComments();
+        $this->prepareClassDeclaration();
+
+        $this->prepareConstructor();
+        $this->prepareGetStorageDescriptorPath();
+        $this->prepareGetStorageName();
+        $this->prepareGetSelectRegister();
+        $this->prepareFindByHash();
+        $this->prepareFindByKey();
+        $this->prepareGetAllItems();
+        $this->prepareGetFilteredItemList();
+
+        $this->prepareTranslationMethods();
+        $this->prepareTranslatedMethods();
+
+        $this->prepareGettersAndSetters();
+        $this->prepareGetTreeData();
+    }
+
+    /**
+     * Prepare the class header comments.
+     * @param string $author_name Name of the author to place in class comments
+     * @param string $author_email e-Mail of the author to place in class comments
+     */
+    private function prepareClassComments(string $author_name = null, string $author_email = null)
+    {
+        $this->addComment(
+                "Class to manage the entity $this->entity_name stored in the storage named $this->table_name."
+        );
+        if ($author_name !== null || $author_email !== null) {
+            $this->addComment("@author"
+                             . (is_string($author_name) ? ' ' . $author_name : '')
+                             . (is_string($author_email) ? " <$author_email>" : '')
+            );
+        }
+        if (is_string($this->since_version) && strlen($this->since_version) > 0) {
+            $this->addComment("@since $this->since_version");
+        }
+        $this->addComment("@version " . NABU_VERSION);
+        $this->addComment("@package " . '\\' . $this->class_namespace);
+    }
+
+    /**
+     * Prepare the class declaration.
+     */
+    private function prepareClassDeclaration()
+    {
         $this->getDocument()->addUse('\nabu\db\CNabuDBInternalObject');
         $this->setExtends('CNabuDBInternalObject');
 
@@ -157,41 +204,12 @@ class CNabuPHPClassTableBuilder extends CNabuPHPClassTableAbstractBuilder
             $this->addUse('TNabuTranslation');
         }
 
-        if ($this->getStorageDescriptor()->hasField($this->table_name . '_hash')) {
+        if ($this->checkForHashField()) {
             $this->addInterface('INabuHashed');
             $this->getDocument()->addUse('\nabu\core\interfaces\INabuHashed');
             $this->getDocument()->addUse('\nabu\core\traits\TNabuHashed');
             $this->addUse('TNabuHashed');
         }
-
-        $this->addComment(
-                "Class to manage the entity $this->entity_name stored in the storage named $this->table_name."
-        );
-        if ($author_name !== null || $author_email !== null) {
-            $this->addComment("@author"
-                             . (is_string($author_name) ? ' ' . $author_name : '')
-                             . (is_string($author_email) ? " <$author_email>" : '')
-            );
-        }
-        if (is_string($this->since_version) && strlen($this->since_version) > 0) {
-            $this->addComment("@since $this->since_version");
-        }
-        $this->addComment("@version " . NABU_VERSION);
-        $this->addComment("@package " . '\\' . $this->class_namespace);
-
-        $this->prepareConstructor();
-        $this->prepareGetStorageDescriptorPath();
-        $this->prepareGetStorageName();
-        $this->prepareGetSelectRegister();
-        $this->prepareFindByKey();
-        $this->prepareGetAllItems();
-        $this->prepareGetFilteredItemList();
-
-        $this->prepareTranslationMethods();
-        $this->prepareTranslatedMethods();
-
-        $this->prepareGettersAndSetters();
-        $this->prepareGetTreeData();
     }
 
     /**
@@ -1008,6 +1026,44 @@ class CNabuPHPClassTableBuilder extends CNabuPHPClassTableAbstractBuilder
             ));
 
             $this->getDocument()->addUse('\nabu\core\CNabuEngine');
+        }
+    }
+
+    private function prepareFindByHash()
+    {
+        $hash_name = $this->table_name . '_hash';
+
+        if ($this->is_hashed) {
+            $hashed_class = nb_strEndsWith($this->class_name, 'Base')
+                          ? preg_replace('/Base$/', '', $this->class_name)
+                          : $this->class_name
+            ;
+            $hashed_namespace = nb_strEndsWith($this->class_namespace, '\base')
+                              ? preg_replace('/\\\\base$/', '', $this->class_namespace)
+                              : $this->class_namespace
+            ;
+
+            $fragment = new CNabuPHPMethodBuilder(
+                $this, 'findByHash', CNabuPHPMethodBuilder::METHOD_PUBLIC, true);
+            $fragment->addComment("Find an instance identified by $hash_name field.");
+            $fragment->addComment("@return CNabuDataObject Returns a valid instance if exists or null if not.");
+
+            $fragment->addParam('hash', 'string', false, false, 'string', 'Hash to search');
+
+            $fragment->addFragment(array(
+                "return $hashed_class::buildObjectFromSQL(",
+                "        'select * '",
+                "        . 'from $this->table_name '",
+                "       . \"where $hash_name='%hash\\\$s'\",",
+                "        array(",
+                "            'hash' => \$hash",
+                "        )",
+                ");"
+            ));
+
+            $this->addFragment($fragment);
+            $this->getDocument()->addUse('\\' . $hashed_namespace . '\\' . $hashed_class);
+            $this->getDocument()->addUse('\nabu\data\CNabuDataObject');
         }
     }
 

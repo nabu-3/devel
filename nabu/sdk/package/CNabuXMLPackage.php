@@ -19,7 +19,10 @@
 
 namespace nabu\sdk\package;
 use SimpleXMLElement;
+use nabu\data\CNabuDataObject;
 use nabu\data\customer\CNabuCustomer;
+use nabu\data\lang\CNabuLanguageList;
+use nabu\db\CNabuDBObject;
 use nabu\xml\CNabuXMLDataObject;
 use nabu\xml\lang\CNabuXMLLanguageList;
 use nabu\xml\security\CNabuXMLRoleList;
@@ -50,9 +53,22 @@ class CNabuXMLPackage extends CNabuXMLDataObject
         return 'nabuPackage';
     }
 
+    protected function getAttributes(SimpleXMLElement $element)
+    {
+    }
+
     protected function setAttributes(SimpleXMLElement $element)
     {
         $element->addAttribute('customer', $this->nb_data_object->grantHash(true));
+    }
+
+    protected function getChilds(SimpleXMLElement $element)
+    {
+        $children = $element->children();
+
+        if (isset($children->{'languages'})) {
+            $this->getXMLLanguageList($children->{'languages'});
+        }
     }
 
     protected function setChilds(SimpleXMLElement $element)
@@ -70,6 +86,19 @@ class CNabuXMLPackage extends CNabuXMLDataObject
         }
     }
 
+    protected function locateDataObject(SimpleXMLElement $element, CNabuDataObject $data_parent = null) : bool
+    {
+        $retval = false;
+
+        if (isset($element->attributes()->customer)) {
+            $guid = $element->attributes()->customer;
+            $this->nb_data_object = CNabuCustomer::findByHash($guid);
+            $retval = true;
+        }
+
+        return $retval;
+    }
+
     /**
      * Sets the XML Role List in the package.
      * @param CNabuXMLRoleList $xml_role_list XML Role List.
@@ -80,6 +109,16 @@ class CNabuXMLPackage extends CNabuXMLDataObject
         $this->xml_role_list = $xml_role_list;
 
         return $this;
+    }
+
+    /**
+     * Gets the XML Language List from a XML branch.
+     * @param SimpleXMLElement $element The XML Element where the list is placed.
+     */
+    private function getXMLLanguageList(SimpleXMLElement $element)
+    {
+        $this->xml_language_list = new CNabuXMLLanguageList(new CNabuLanguageList());
+        $this->xml_language_list->collect($element);
     }
 
     /**
@@ -104,5 +143,9 @@ class CNabuXMLPackage extends CNabuXMLDataObject
         $this->xml_site_list = $xml_site_list;
 
         return $this;
+    }
+
+    public function save()
+    {
     }
 }
