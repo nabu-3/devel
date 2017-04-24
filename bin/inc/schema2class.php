@@ -214,6 +214,30 @@ createEntity(
     true,
     $dictionary
 );
+createEntity(
+    'nb_user_group_type',
+    'nabu\data\security\base',
+    'CNabuUserGroupTypeBase',
+    'User Group Type',
+    true,
+    $dictionary
+);
+createEntity(
+    'nb_user_group',
+    'nabu\data\security\base',
+    'CNabuUserGroupBase',
+    'User Group',
+    true,
+    $dictionary
+);
+createEntity(
+    'nb_user_group_member',
+    'nabu\data\security\base',
+    'CNabuUserGroupMemberBase',
+    'User Group Member',
+    true,
+    $dictionary
+);
 
 // Domains: nabu\data\domain\base
 createEntity(
