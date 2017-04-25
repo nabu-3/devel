@@ -22,6 +22,7 @@ use SimpleXMLElement;
 use nabu\data\CNabuDataObject;
 use nabu\data\customer\CNabuCustomer;
 use nabu\data\lang\CNabuLanguageList;
+use nabu\data\security\CNabuRoleList;
 use nabu\db\CNabuDBObject;
 use nabu\xml\CNabuXMLDataObject;
 use nabu\xml\lang\CNabuXMLLanguageList;
@@ -66,8 +67,12 @@ class CNabuXMLPackage extends CNabuXMLDataObject
     {
         $children = $element->children();
 
-        if (isset($children->{'languages'})) {
-            $this->getXMLLanguageList($children->{'languages'});
+        if (isset($children->languages)) {
+            $this->getXMLLanguageList($children->languages);
+        }
+
+        if (isset($children->roles)) {
+            $this->getXMLRoleList($children->roles);
         }
     }
 
@@ -90,25 +95,13 @@ class CNabuXMLPackage extends CNabuXMLDataObject
     {
         $retval = false;
 
-        if (isset($element->attributes()->customer)) {
-            $guid = $element->attributes()->customer;
-            $this->nb_data_object = CNabuCustomer::findByHash($guid);
-            $retval = true;
-        }
+        $retval = (
+            isset($element->attributes()->customer) &&
+            is_string($guid = (string)$element->attributes()->customer) &&
+            ($this->nb_data_object = CNabuCustomer::findByHash($guid)) instanceof CNabuCustomer
+        );
 
         return $retval;
-    }
-
-    /**
-     * Sets the XML Role List in the package.
-     * @param CNabuXMLRoleList $xml_role_list XML Role List.
-     * @return CNabuXMLPackage Returns self pointer to grant chained setters call.
-     */
-    public function setXMLRoleList(CNabuXMLRoleList $xml_role_list) : CNabuXMLPackage
-    {
-        $this->xml_role_list = $xml_role_list;
-
-        return $this;
     }
 
     /**
@@ -129,6 +122,28 @@ class CNabuXMLPackage extends CNabuXMLDataObject
     public function setXMLLanguageList(CNabuXMLLanguageList $xml_language_list) : CNabuXMLPackage
     {
         $this->xml_language_list = $xml_language_list;
+
+        return $this;
+    }
+
+    /**
+     * Gets the XML Role List from a XML branch.
+     * @param SimpleXMLElement $element The XML Element where the list is placed.
+     */
+    private function getXMLRoleList(SimpleXMLElement $element)
+    {
+        $this->xml_role_list = new CNabuXMLRoleList(new CNabuRoleList($this->nb_data_object));
+        $this->xml_role_list->collect($element);
+    }
+
+    /**
+     * Sets the XML Role List in the package.
+     * @param CNabuXMLRoleList $xml_role_list XML Role List.
+     * @return CNabuXMLPackage Returns self pointer to grant chained setters call.
+     */
+    public function setXMLRoleList(CNabuXMLRoleList $xml_role_list) : CNabuXMLPackage
+    {
+        $this->xml_role_list = $xml_role_list;
 
         return $this;
     }
