@@ -431,7 +431,7 @@ class CNabuPHPClassTableXMLBuilder extends CNabuPHPClassTableAbstractBuilder
 
         if ($this->is_translated) {
             $fragment->addFragment(array(
-                'parent::getChilds($element)'
+                'parent::getChilds($element);'
             ));
         }
 

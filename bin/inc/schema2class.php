@@ -206,6 +206,27 @@ createEntity(
     true,
     $dictionary
 );
+createXML(
+    'nb_role',
+    'nabu\xml\security\base',
+    'CNabuXMLRoleBase',
+    'Role',
+    'role',
+    array(
+        'nb_role_key' => 'key',
+        'nb_role_root' => 'root'
+    ),
+    null,
+    null,
+    array(
+        'nb_role_lang_name' => 'name'
+    ),
+    'nabu\data\security',
+    'CNabuRole',
+    true,
+    $dictionary,
+    '3.0.12 Surface'
+);
 createEntity(
     'nb_user',
     'nabu\data\security\base',

@@ -1,6 +1,6 @@
 {
     "name": "nabu-3/sdk",
-    "description": "SDK package to extend nabu-3 Framework with extensions for developers",
+    "description": "nabu-3 SDK package to extend Framework with extensions for developers",
     "version": "3.0.8",
     "type": "nabu-sdk",
     "keywords": [ "nabu", "nabu-3", "devel", "developer", "development", "framework", "frameworks", "sdk" ],

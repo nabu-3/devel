@@ -241,7 +241,7 @@ class CNabuPHPClassListXMLBuilder extends CNabuPHPClassTableAbstractBuilder
         $fragment->addComment("@return CNabuXMLDataObject Returns a XML instance with the child data object instance.");
 
         $fragment->addParam(
-            'nb_child', 'CNabuDataObject', false, null, 'CNabuDataObject',
+            'nb_child', 'CNabuDataObject', true, null, 'CNabuDataObject',
             'Child data object.'
         );
         $this->getDocument()->addUse('\nabu\data\CNabuDataObject');
