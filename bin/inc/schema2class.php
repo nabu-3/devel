@@ -760,6 +760,24 @@ createEntity(
     $dictionary
 );
 
+// iContact: nabu\data\icontact\base
+createEntity(
+    'nb_icontact',
+    'nabu\data\icontact\base',
+    'CNabuIContactBase',
+    'iContact',
+    true,
+    $dictionary
+);
+createEntity(
+    'nb_icontact_prospect',
+    'nabu\data\icontact\base',
+    'CNabuIContactProspectBase',
+    'iContact Prospect',
+    true,
+    $dictionary
+);
+
 // Project: nabu\data\project\base
 createEntity(
     'nb_project',
