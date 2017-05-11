@@ -615,6 +615,14 @@ createEntity(
     true,
     $dictionary
 );
+createEntity(
+    'nb_site_visual_editor_item',
+    'nabu\visual\site\base',
+    'CNabuSiteVisualEditorItemBase',
+    'Site Visual Editor Item',
+    true,
+    $dictionary
+);
 
 // Commerces: nabu\data\commerce\base
 createEntity(
