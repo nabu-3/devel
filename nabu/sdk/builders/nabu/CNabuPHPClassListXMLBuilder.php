@@ -57,9 +57,9 @@ class CNabuPHPClassListXMLBuilder extends CNabuPHPClassTableAbstractBuilder
      * @param string $class_data_namespace Namespace of the instance data to be managed.
      * @param string $class_data_name Class name descending from CNabuDataObject of the instance data to be managed.
      * @param string $table_name Table name to be extracted.
-     * @param string $schema_name Scheme name of the table.
+     * @param string|null $schema_name Scheme name of the table.
      * @param bool $abstract Defines if the class is abstract or not.
-     * @param string $since_version Since version for comments.
+     * @param string|null $since_version Since version for comments.
      * @throws ENabuCoreException Throws an exception if some parameter is not valid.
      */
     public function __construct(
@@ -119,15 +119,14 @@ class CNabuPHPClassListXMLBuilder extends CNabuPHPClassTableAbstractBuilder
 
     /**
      * Prepares the class and define it in memory to be serialized after.
-     * @param string $author_name Name of the author to place in class comments
-     * @param string $author_email e-Mail of the author to place in class comments
+     * @param string|null $author_name Name of the author to place in class comments
+     * @param string|null $author_email e-Mail of the author to place in class comments
      * @return bool Return true if the XML was prepared or false if not.
      */
     public function prepare(string $author_name = null, string $author_email = null) : bool
     {
         $this->prepareClassComments($author_name, $author_email);
         $this->prepareClassDeclaration();
-        $this->checkForHashField();
         $this->prepareConstructor();
 
         if (!$this->is_translation) {
@@ -145,8 +144,8 @@ class CNabuPHPClassListXMLBuilder extends CNabuPHPClassTableAbstractBuilder
 
     /**
      * Prepare the class header comments.
-     * @param string $author_name Name of the author to place in class comments
-     * @param string $author_email e-Mail of the author to place in class comments
+     * @param string|null $author_name Name of the author to place in class comments
+     * @param string|null $author_email e-Mail of the author to place in class comments
      */
     private function prepareClassComments(string $author_name = null, string $author_email = null)
     {

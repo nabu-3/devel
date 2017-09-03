@@ -25,7 +25,6 @@ use nabu\sdk\builders\php\CNabuPHPMethodBuilder;
 use nabu\sdk\builders\php\CNabuPHPConstantBuilder;
 use nabu\sdk\builders\php\CNabuPHPConstructorBuilder;
 use nabu\core\exceptions\ENabuCoreException;
-use nabu\db\interfaces\INabuDBDescriptor;
 
 /**
  * Class to create class list intances.
@@ -49,14 +48,16 @@ class CNabuPHPClassListBuilder extends CNabuPHPClassTableAbstractBuilder
     /**
      * The constructor checks if all parameters have valid values, and throws an exception if not.
      * @param CNabuAbstractBuilder $container Container builder object.
-     * @param INabuDBDescriptor $table_desc Storage descriptor instance.
+     * @param INabuDBConnector $connector Database Storage Connector.
      * @param string $namespace Namespace of the class to be generated.
      * @param string $name Class name to be generated without namespace.
      * @param string $entity_name Entity name. This value is used for comment purposes.
      * @param string $item_class_name Class name of each item.
      * @param string $item_entity_name Entity name of each item.
+     * @param string $table_name Table name.
+     * @param string $schema_name Schema name.
      * @param bool $abstract Defines if the class is abstract or not.
-     * @param string $since_version Since version for comments.
+     * @param string|null $since_version Since version for comments.
      * @throws ENabuCoreException Throws an exception if some parameter is not valid.
      */
     public function __construct(
@@ -123,10 +124,12 @@ class CNabuPHPClassListBuilder extends CNabuPHPClassTableAbstractBuilder
         return $retval;
     }
 
+    /*
     public function checkSecondaryIndexes()
     {
 
     }
+    */
 
     /**
      * Prepares the class and define it in memory to be serialized after.
@@ -172,10 +175,17 @@ class CNabuPHPClassListBuilder extends CNabuPHPClassTableAbstractBuilder
     private function prepareClassConstants()
     {
         $descriptor = $this->getStorageDescriptor();
+        $storage_name = $descriptor->getStorageName();
 
-        if ($descriptor->hasField($descriptor->getStorageName() . '_key')) {
+        if ($descriptor->hasField($storage_name . '_key')) {
             $fragment = new CNabuPHPConstantBuilder($this, 'INDEX_KEY', 'keys', 'string');
-            $fragment->addComment('Index the list using the key field.');
+            $fragment->addComment("Index the list using the ${storage_name}_key field.");
+            $this->addFragment($fragment);
+        }
+
+        if ($descriptor->hasField($descriptor->getStorageName() . '_order')) {
+            $fragment = new CNabuPHPConstantBuilder($this, 'INDEX_ORDER', 'order', 'int');
+            $fragment->addComment("Index the list using the ${storage_name}_order field.");
             $this->addFragment($fragment);
         }
     }
@@ -204,17 +214,26 @@ class CNabuPHPClassListBuilder extends CNabuPHPClassTableAbstractBuilder
 
         $descriptor = $this->getStorageDescriptor();
         $field = $descriptor->getStorageName() . '_key';
+        $order = $descriptor->getStorageName() . '_order';
+        if (!$descriptor->hasField($order)) {
+            $order = false;
+        }
 
         if ($descriptor->hasField($field)) {
-            $order = $descriptor->getStorageName() . '_order';
-            if ($descriptor->hasField($order)) {
-                $order = false;
-            }
             $fragment->addFragment(array(
                 "\$this->addIndex(",
                 "    new CNabuDataObjectListIndex(\$this, '$field', "
-                . ($order ? "'$order'" : 'null')
+                . ($order ? "'$order'" : "'$field'")
                 . ", self::INDEX_KEY)",
+                ");"
+            ));
+            $this->getDocument()->addUse('\nabu\data\CNabuDataObjectListIndex');
+        }
+
+        if (is_string($order)) {
+            $fragment->addFragment(array(
+                "\$this->addIndex(",
+                "    new CNabuDataObjectListIndex(\$this, '$order', '$order', self::INDEX_ORDER)",
                 ");"
             ));
             $this->getDocument()->addUse('\nabu\data\CNabuDataObjectListIndex');

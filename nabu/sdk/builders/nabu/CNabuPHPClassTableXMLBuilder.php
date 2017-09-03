@@ -195,7 +195,7 @@ class CNabuPHPClassTableXMLBuilder extends CNabuPHPClassTableAbstractBuilder
      */
     private function prepareClassDeclaration()
     {
-        $this->checkForHashField();
+        $this->isHashed();
 
         if ($this->checkForTranslatedTable()) {
             $this->getDocument()->addUse('\nabu\xml\lang\CNabuXMLTranslated');

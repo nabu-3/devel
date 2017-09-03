@@ -51,6 +51,10 @@ class CNabuPHPClassTableAbstractBuilder extends CNabuPHPClassBuilder
     protected $is_translation = false;
     /** @var bool $is_hashed Flag to determine if table have a hash field. */
     protected $is_hashed = false;
+    /** @var bool $is_keyed Flag to determine if table have a key field. */
+    protected $is_keyed = false;
+    /** @var bool $is_ordered Flag to determine if table have a order field. */
+    protected $is_ordered = false;
     /** @var bool $is_customer_child Flag to determine if entity is a Customer child entity. */
     protected $is_customer_child = false;
     /** @var bool $is_customer_foreign Flag to determine if entity is a Customer foreign entity. */
@@ -301,29 +305,28 @@ class CNabuPHPClassTableAbstractBuilder extends CNabuPHPClassBuilder
      */
     public function checkSecondaryConstraints()
     {
-        $this->is_customer_foreign = $this->checkSecondaryRelationship(NABU_CUSTOMER_TABLE, NABU_CUSTOMER_FIELD_ID);
-        $this->is_commerce_foreign = $this->checkSecondaryRelationship(NABU_COMMERCE_TABLE, NABU_COMMERCE_FIELD_ID);
-        $this->is_catalog_foreign = $this->checkSecondaryRelationship(NABU_CATALOG_TABLE, NABU_CATALOG_FIELD_ID);
-        $this->is_site_foreign = $this->checkSecondaryRelationship(NABU_SITE_TABLE, NABU_SITE_FIELD_ID);
-        $this->is_site_target_foreign = $this->checkSecondaryRelationship(
-            NABU_SITE_TARGET_TABLE, NABU_SITE_TARGET_FIELD_ID
-        );
-        $this->is_medioteca_foreign = $this->checkSecondaryRelationship(NABU_MEDIOTECA_TABLE, NABU_MEDIOTECA_FIELD_ID);
-        $this->is_messaging_foreign = $this->checkSecondaryRelationship(NABU_MESSAGING_TABLE, NABU_MESSAGING_FIELD_ID);
-        $this->is_messaging_service_foreign = $this->checkSecondaryRelationship(
-            NABU_MESSAGING_SERVICE_TABLE, NABU_MESSAGING_SERVICE_FIELD_ID
-        );
-        $this->is_project_foreign = $this->checkSecondaryRelationship(NABU_PROJECT_TABLE, NABU_PROJECT_FIELD_ID);
-        $this->is_role_foreign = $this->checkSecondaryRelationship(NABU_ROLE_TABLE, NABU_ROLE_FIELD_ID);
+        $this->is_hashed = $this->checkSecondaryRelationship($this->table_descriptor->getStorageName() . '_hash');
+        $this->is_keyed = $this->checkSecondaryRelationship($this->table_descriptor->getStorageName() . '_key');
+        $this->is_ordered = $this->checkSecondaryRelationship($this->table_descriptor->getStorageName() . '_order');
+
+        $this->is_customer_foreign = $this->checkSecondaryRelationship(NABU_CUSTOMER_FIELD_ID);
+        $this->is_commerce_foreign = $this->checkSecondaryRelationship(NABU_COMMERCE_FIELD_ID);
+        $this->is_catalog_foreign = $this->checkSecondaryRelationship(NABU_CATALOG_FIELD_ID);
+        $this->is_site_foreign = $this->checkSecondaryRelationship(NABU_SITE_FIELD_ID);
+        $this->is_site_target_foreign = $this->checkSecondaryRelationship(NABU_SITE_TARGET_FIELD_ID);
+        $this->is_medioteca_foreign = $this->checkSecondaryRelationship(NABU_MEDIOTECA_FIELD_ID);
+        $this->is_messaging_foreign = $this->checkSecondaryRelationship(NABU_MESSAGING_FIELD_ID);
+        $this->is_messaging_service_foreign = $this->checkSecondaryRelationship(NABU_MESSAGING_SERVICE_FIELD_ID);
+        $this->is_project_foreign = $this->checkSecondaryRelationship(NABU_PROJECT_FIELD_ID);
+        $this->is_role_foreign = $this->checkSecondaryRelationship(NABU_ROLE_FIELD_ID);
     }
 
     /**
      * Check if table have and index related with other table and associate it.
-     * @param string $table Table name to match.
      * @param string $field Field in $table to match.
      * @return bool Returns true if both tables are connected..
      */
-    public function checkSecondaryRelationship($table, $field)
+    public function checkSecondaryRelationship($field)
     {
         return $this->table_descriptor->hasSecondaryConstraints() &&
             $this->table_descriptor->hasField($field) &&
@@ -403,10 +406,28 @@ class CNabuPHPClassTableAbstractBuilder extends CNabuPHPClassBuilder
 
     /**
      * Check if the table have a hash field.
-     * @return bool Returns true if is a hashed table.
+     * @return bool Returns true if table have a hash field and false if not.
      */
-    protected function checkForHashField() : bool
+    public function isHashed()
     {
-        return ($this->is_hashed = $this->table_descriptor->hasField($this->table_name . '_hash'));
+        return $this->is_hashed;
+    }
+
+    /**
+     * Check if the table have a key field.
+     * @return bool Returns true if table have a key field and false if not.
+     */
+    public function isKeyed()
+    {
+        return $this->is_keyed;
+    }
+
+    /**
+     * Check if the table have a order field.
+     * @return bool Returns true if table have a order field and false if not.
+     */
+    public function isOrdered()
+    {
+        return $this->is_ordered;
     }
 }

@@ -54,9 +54,9 @@ class CNabuPHPClassTableBuilder extends CNabuPHPClassTableAbstractBuilder
      * @param string $name Class name to be generated without namespace.
      * @param string $entity_name Entity name. This value is used for comment purposes.
      * @param string $table Table name to be extracted.
-     * @param string $schema Scheme name of the table.
+     * @param string|null $schema Scheme name of the table.
      * @param bool $abstract Defines if the class is abstract or not.
-     * @param string $since_version Since version for comments.
+     * @param string|null $since_version Since version for comments.
      * @throws ENabuCoreException Throws an exception if some parameter is not valid
      */
     public function __construct(
@@ -84,8 +84,8 @@ class CNabuPHPClassTableBuilder extends CNabuPHPClassTableAbstractBuilder
 
     /**
      * Prepares the class and define it in memory to be serialized after.
-     * @param string $author_name Name of the author to place in class comments
-     * @param string $author_email e-Mail of the author to place in class comments
+     * @param string|null $author_name Name of the author to place in class comments
+     * @param string|null $author_email e-Mail of the author to place in class comments
      * @return bool Return true if the table was prepared or false if not.
      */
     public function prepare(string $author_name = null, string $author_email = null)
@@ -111,8 +111,8 @@ class CNabuPHPClassTableBuilder extends CNabuPHPClassTableAbstractBuilder
 
     /**
      * Prepare the class header comments.
-     * @param string $author_name Name of the author to place in class comments
-     * @param string $author_email e-Mail of the author to place in class comments
+     * @param string|null $author_name Name of the author to place in class comments
+     * @param string|null $author_email e-Mail of the author to place in class comments
      */
     private function prepareClassComments(string $author_name = null, string $author_email = null)
     {
@@ -204,7 +204,7 @@ class CNabuPHPClassTableBuilder extends CNabuPHPClassTableAbstractBuilder
             $this->addUse('TNabuTranslation');
         }
 
-        if ($this->checkForHashField()) {
+        if ($this->isHashed()) {
             $this->addInterface('INabuHashed');
             $this->getDocument()->addUse('\nabu\core\interfaces\INabuHashed');
             $this->getDocument()->addUse('\nabu\core\traits\TNabuHashed');
