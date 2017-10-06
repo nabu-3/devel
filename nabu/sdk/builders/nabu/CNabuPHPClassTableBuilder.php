@@ -347,7 +347,12 @@ class CNabuPHPClassTableBuilder extends CNabuPHPClassTableAbstractBuilder
         switch ($field['data_type']) {
             case 'int':
                 $part_if = "\$this->isValueNumeric('$name')";
-                $part_where =  "$name=%$name\\\$d";
+                $part_where = "$name=%$name\\\$d";
+                break;
+            case 'float':
+            case 'double':
+                $part_if = "\$this->isValueNumeric('$name')";
+                $part_where = "$name=%$name\\\$d";
                 break;
             case 'varchar':
             case 'text':
@@ -449,6 +454,7 @@ class CNabuPHPClassTableBuilder extends CNabuPHPClassTableAbstractBuilder
         $param_type = null;
         $param_is_def = false;
         $param_default = false;
+        $param_is_json = false;
 
         switch ($field['data_type']) {
             case 'int':
@@ -485,6 +491,9 @@ class CNabuPHPClassTableBuilder extends CNabuPHPClassTableAbstractBuilder
         $is_attr = $table . '_attributes' === $field['name'] &&
                    in_array($field['data_type'], array('text', 'tinytext', 'longtext', 'varchar', 'json'))
         ;
+        if ($is_attr) {
+            $param_type = null;
+        }
         $this->have_attributes = $this->have_attributes || $is_attr;
         $nullable = (!array_key_exists('is_nullable', $field) || $field['is_nullable']);
         $data_type = ($nullable && $data_type !== 'mixed' ? 'null|' : '')
@@ -515,9 +524,7 @@ class CNabuPHPClassTableBuilder extends CNabuPHPClassTableAbstractBuilder
         }
 
         $table = $this->getStorageDescriptor()->getStorageName();
-        if ($table . '_attributes' === $field['name'] &&
-            in_array($field['data_type'], array('text', 'tinytext', 'longtext', 'varchar', 'json'))
-        ) {
+        if ($is_attr) {
             $fragment->addFragment("\$this->setValueJSONEncoded('$name', \$$param_name);");
         } else {
             $fragment->addFragment("\$this->setValue('$name', \$$param_name);");
