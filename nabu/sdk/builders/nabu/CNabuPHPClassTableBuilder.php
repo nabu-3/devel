@@ -496,9 +496,10 @@ class CNabuPHPClassTableBuilder extends CNabuPHPClassTableAbstractBuilder
         }
         $this->have_attributes = $this->have_attributes || $is_attr;
         $nullable = (!array_key_exists('is_nullable', $field) || $field['is_nullable']);
-        $data_type = ($nullable && $data_type !== 'mixed' ? 'null|' : '')
-                   . $data_type
-                   . ($is_attr && $data_type !== 'mixed' ? '|array' : '');
+        $data_type = $data_type
+                   . ($is_attr && $data_type !== 'mixed' ? '|array' : '')
+                   . ($nullable && $data_type !== 'mixed' ? 'null|' : '')
+        ;
 
         $fragment = new CNabuPHPMethodBuilder(
             $this, 'set' . $studly_name, CNabuPHPMethodBuilder::METHOD_PUBLIC,
