@@ -787,6 +787,28 @@ createEntity(
     true,
     $dictionary
 );
+createEntity(
+    'nb_icontact_prospect_attachment',
+    'nabu\data\icontact\base',
+    'CNabuIContactProspectAttachmentBase',
+    'iContact Prospect Attachment',
+    true,
+    $dictionary
+);
+createEntity(
+    'nb_icontact_prospect_diary',
+    'nabu\data\icontact\base',
+    'CNabuIContactProspectDiaryBase',
+    true,
+    $dictionary
+);
+createEntity(
+    'nb_icontact_prospect_status',
+    'nabu\data\icontact\base',
+    'CNabuIContactProspectStatus',
+    true,
+    $dictionary
+);
 
 // Project: nabu\data\project\base
 createEntity(
