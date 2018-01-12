@@ -806,7 +806,7 @@ createEntity(
 createEntity(
     'nb_icontact_prospect_status',
     'nabu\data\icontact\base',
-    'CNabuIContactProspectStatus',
+    'CNabuIContactProspectStatusBase',
     'iContact Prospect Status',
     true,
     $dictionary
