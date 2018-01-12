@@ -799,6 +799,7 @@ createEntity(
     'nb_icontact_prospect_diary',
     'nabu\data\icontact\base',
     'CNabuIContactProspectDiaryBase',
+    'iContact Prospect Diary',
     true,
     $dictionary
 );
@@ -806,6 +807,7 @@ createEntity(
     'nb_icontact_prospect_status',
     'nabu\data\icontact\base',
     'CNabuIContactProspectStatus',
+    'iContact Prospect Status',
     true,
     $dictionary
 );
