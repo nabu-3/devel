@@ -804,10 +804,10 @@ createEntity(
     $dictionary
 );
 createEntity(
-    'nb_icontact_prospect_status',
+    'nb_icontact_prospect_status_type',
     'nabu\data\icontact\base',
-    'CNabuIContactProspectStatusBase',
-    'iContact Prospect Status',
+    'CNabuIContactProspectStatusTypeBase',
+    'iContact Prospect Status Type',
     true,
     $dictionary
 );
