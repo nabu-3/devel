@@ -95,6 +95,8 @@ class CNabuPHPClassTableBuilder extends CNabuPHPClassTableAbstractBuilder
         $this->prepareClassDeclaration();
 
         $this->prepareConstructor();
+        $this->prepareRefresh();
+        $this->prepareDelete();
         $this->prepareGetStorageDescriptorPath();
         $this->prepareGetStorageName();
         $this->prepareGetSelectRegister();
@@ -1381,7 +1383,6 @@ class CNabuPHPClassTableBuilder extends CNabuPHPClassTableAbstractBuilder
             if ($this->is_customer_child || $this->is_customer_foreign) {
                 $this->prepareGetCustomerUsedLanguages($lang_namespace, $lang_class);
             }
-            $this->prepareRefresh();
         }
     }
 
@@ -1636,6 +1637,25 @@ class CNabuPHPClassTableBuilder extends CNabuPHPClassTableAbstractBuilder
                 'bool', 'Forces to reload child entities from the database storage.'
             );
             $fragment->addFragment('return parent::refresh($force, $cascade) && $this->appendTranslatedRefresh($force);');
+
+            $this->addFragment($fragment);
+        }
+    }
+
+    private function prepareDelete()
+    {
+        if ($this->is_translated) {
+            $fragment = new CNabuPHPMethodBuilder(
+                $this, 'delete', CNabuPHPMethodBuilder::METHOD_PUBLIC,
+                false, false, false, true, 'bool'
+            );
+            $fragment->addComment('Overrides delete method to delete translations when delete the this instance.');
+            $fragment->addComment('@return bool Returns true if the entity and their translations are deleted.');
+            $fragment->addFragment(array(
+                '$this->deleteTranslations(true);',
+                '',
+                'return parent::delete();'
+            ));
 
             $this->addFragment($fragment);
         }
