@@ -84,7 +84,8 @@ $dictionary = array(
     'wsearch' => 'WSearch',
     'cta' => 'CTA',
     'sku' => 'SKU',
-    'vr' => 'VR'
+    'vr' => 'VR',
+    'x_frame_options' => 'XFrameOptions'
 );
 
 // Language: nabu\data\lang
