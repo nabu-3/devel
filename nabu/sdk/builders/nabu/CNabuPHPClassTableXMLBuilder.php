@@ -154,6 +154,7 @@ class CNabuPHPClassTableXMLBuilder extends CNabuPHPClassTableAbstractBuilder
             $this->prepareGetAttributes();
             $this->prepareSetAttributes();
         } else {
+            $this->prepareGetAttributesForTranslation();
             $this->prepareSetAttributesForTranslation();
         }
 
@@ -371,6 +372,32 @@ class CNabuPHPClassTableXMLBuilder extends CNabuPHPClassTableAbstractBuilder
 
         if (is_array($this->element_attributes) && count($this->element_attributes) > 0) {
             $fragment->addFragment('$this->putAttributesFromList($element, array(');
+            $count = count($this->element_attributes);
+            foreach ($this->element_attributes as $field => $attr) {
+                $fragment->addFragment("    '$field' => '$attr'" . (--$count > 0 ? ',' : ''));
+            }
+            $fragment->addFragment('), false);');
+        }
+
+        $this->getDocument()->addUse('\SimpleXMLElement');
+
+        $this->addFragment($fragment);
+    }
+
+    /**
+     * Prepares the getAttributes method in case that is not a translation data entity.
+     */
+    private function prepareGetAttributesForTranslation()
+    {
+        $fragment = new CNabuPHPMethodBuilder($this, 'getAttributes', CNabuPHPMethodBuilder::METHOD_PROTECTED);
+        $fragment->addComment("Get default attributes of $this->entity_name from XML Element.");
+        $fragment->addParam(
+            'element', 'SimpleXMLElement', false, null, 'SimpleXMLElement',
+            'XML Element to get attributes'
+        );
+
+        if (is_array($this->element_attributes) && count($this->element_attributes) > 0) {
+            $fragment->addFragment('$this->getAttributesFromList($element, array(');
             $count = count($this->element_attributes);
             foreach ($this->element_attributes as $field => $attr) {
                 $fragment->addFragment("    '$field' => '$attr'" . (--$count > 0 ? ',' : ''));

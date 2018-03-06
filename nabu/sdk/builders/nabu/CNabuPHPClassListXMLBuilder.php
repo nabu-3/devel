@@ -140,6 +140,8 @@ class CNabuPHPClassListXMLBuilder extends CNabuPHPClassTableAbstractBuilder
             $this->prepareCreateXMLChildObject();
         }
 
+        $this->prepareLocateDataObject();
+
         return true;
     }
 
@@ -222,6 +224,53 @@ class CNabuPHPClassListXMLBuilder extends CNabuPHPClassTableAbstractBuilder
         $fragment->addComment("@return string Return the Tag name.");
 
         $fragment->addFragment("return '$this->element';");
+
+        $this->addFragment($fragment);
+    }
+
+    /**
+     * Prepares the locateDataObjcet method.
+     */
+    private function prepareLocateDataObject()
+    {
+        $fragment = new CNabuPHPMethodBuilder(
+            $this, 'locateDataObject', CNabuPHPMethodBuilder::METHOD_PROTECTED,
+            false, false, false, true, 'bool'
+        );
+        $fragment->addComment("Locate a Data Object.");
+        $fragment->addComment("@return bool Returns true if the Data Object found or false if not.");
+
+        $fragment->addParam(
+            'element', 'SimpleXMLElement', false, null, 'SimpleXMLElement', 'Element to locate the Data Object.'
+        );
+        $fragment->addParam(
+            'data_parent', 'CNabuDataObject', true, null, 'CNabuDataObject', 'Data Parent object.'
+        );
+
+        $fragment->addFragment(array(
+            '$retval = false;',
+            '',
+            "if (isset(\$element['GUID'])) {",
+            "    \$guid = (string)\$element['GUID'];",
+            "    if (!(\$this->nb_data_object instanceof $this->class_data_name)) {",
+            "        \$this->nb_data_object = $this->class_data_name::findByHash(\$guid);",
+            '    } else {',
+            '        $this->nb_data_object = null;',
+            '    }',
+            '',
+            "    if (!(\$this->nb_data_object instanceof $this->class_data_name)) {",
+            "        \$this->nb_data_object = new $this->class_data_name();",
+            "        \$this->nb_data_object->setHash(\$guid);",
+            '    }',
+            '    $retval = true;',
+            '}',
+            '',
+            'return $retval;'
+        ));
+
+        $this->getDocument()->addUse('\nabu\data\CNabuDataObject');
+        $this->getDocument()->addUse("\\$this->class_data_namespace\\$this->class_data_name");
+        $this->getDocument()->addUse('\SimpleXMLElement');
 
         $this->addFragment($fragment);
     }
