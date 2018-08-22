@@ -91,7 +91,7 @@ class CNabuPHPClassTableBuilder extends CNabuPHPClassTableAbstractBuilder
      */
     public function prepare(string $author_name = null, string $author_email = null)
     {
-        $this->prepareClassComments();
+        $this->prepareClassComments($author_name, $author_email);
         $this->prepareClassDeclaration();
 
         $this->prepareConstructor();
