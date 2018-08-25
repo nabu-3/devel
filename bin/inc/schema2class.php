@@ -33,7 +33,7 @@ $nb_engine = CNabuEngine::getEngine();
 $mysql_connector = $nb_engine->getMainDB();
 
 if (!$mysql_connector->isConnected()) {
-    die ("Database not found or not connected\n");
+    die("Database not found or not connected\n");
 }
 
 $creator_name = nbCLICheckOption('a', 'author', ':', null, false);
