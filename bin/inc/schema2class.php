@@ -85,7 +85,8 @@ $dictionary = array(
     'cta' => 'CTA',
     'sku' => 'SKU',
     'vr' => 'VR',
-    'signin' => 'SignIn'
+    'signin' => 'SignIn',
+    'mimetype' => 'MIMEType'
 );
 
 // Language: nabu\data\lang
