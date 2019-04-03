@@ -1036,7 +1036,7 @@ class CNabuPHPClassTableBuilder extends CNabuPHPClassTableAbstractBuilder
                 '', 'return $nb_item_list;'
             ));
 
-            $this->getDocument()->addUse('\nabu\core\CNabuEngine');
+            $this->getDocument()->addUse(NABU_ENGINE_CLASS);
         }
     }
 
@@ -1474,7 +1474,7 @@ class CNabuPHPClassTableBuilder extends CNabuPHPClassTableAbstractBuilder
 
         $this->addFragment($fragment);
 
-        $this->getDocument()->addUse('\nabu\core\CNabuEngine');
+        $this->getDocument()->addUse(NABU_ENGINE_CLASS);
         $this->getDocument()->addUse('\\' . $lang_namespace . '\\' . $lang_class);
     }
 
@@ -1543,7 +1543,7 @@ class CNabuPHPClassTableBuilder extends CNabuPHPClassTableAbstractBuilder
 
         $this->addFragment($fragment);
 
-        $this->getDocument()->addUse('\nabu\core\CNabuEngine');
+        $this->getDocument()->addUse(NABU_ENGINE_CLASS);
         $this->getDocument()->addUse('\\' . $lang_namespace . '\\' . $lang_class);
     }
 
