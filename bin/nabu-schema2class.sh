@@ -23,18 +23,24 @@ echo
 # This variable defines the path for config files. You can change this value.
 # When nabu-3 install script runs, he creates this path if not exists.
 NABU_ETC_PATH=/etc/opt/nabu-3.conf.d
-INSTALL_PATH=`realpath $0`
-INSTALL_PATH=`dirname $INSTALL_PATH`
+SCRIPT_PATH=`realpath $0`
+SCRIPT_PATH=`dirname ${SCRIPT_PATH}`
 
-if [ -d ${NABU_ETC_PATH} ] && [ -f ${NABU_ETC_PATH}/nabu-3.conf ] ; then
-    source ${NABU_ETC_PATH}/nabu-3.conf
+if [ -f ${SCRIPT_PATH}/nabu-3.conf ] ; then
+    source ${SCRIPT_PATH}/nabu-3.conf
 else
-    echo Config file not found
-    exit 1
+    INSTALL_PATH=`pwd`/${0}
+    INSTALL_PATH=`dirname ${INSTALL_PATH}`
+    if [ -f ${INSTALL_PATH}/nabu-3.conf ] ; then
+        source ${INSTALL_PATH}/nabu-3.conf
+    else
+        echo Config file not found
+        exit 1
+    fi
 fi
 
-if [ -f ${INSTALL_PATH}/inc/schema2class.php ] ; then
-    php ${PHP_PARAMS} ${INSTALL_PATH}/inc/schema2class.php "$@"
+if [ -f ${SCRIPT_PATH}/inc/schema2class.php ] ; then
+    php ${PHP_PARAMS} ${SCRIPT_PATH}/inc/schema2class.php "$@"
 else
     echo Execution error: schema2class.php script not found.
 fi
