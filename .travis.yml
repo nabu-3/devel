@@ -1,0 +1,13 @@
+dist: trusty
+
+language: php
+php:
+    - '7.2'
+    - '7.3'
+
+addons:
+    sonarcloud:
+        organization: "nabu-3-github"
+
+script:
+    - sonar-scanner
