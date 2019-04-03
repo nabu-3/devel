@@ -1,6 +1,7 @@
 <?php
 
-/*  Copyright 2009-2011 Rafael Gutierrez Martinez
+/** @license
+ *  Copyright 2009-2011 Rafael Gutierrez Martinez
  *  Copyright 2012-2013 Welma WEB MKT LABS, S.L.
  *  Copyright 2014-2016 Where Ideas Simply Come True, S.L.
  *  Copyright 2017 nabu-3 Group
@@ -49,7 +50,7 @@ class CNabuZipReader extends CNabuAbstractReader
                     $numFiles = $walker->processSource($this);
                     break;
                 default:
-                    echo "Error in Walker Mode [" . $reader->getWalkerMode() . "]\n";
+                    echo "Error in Walker Mode [" . $walker->getWalkerMode() . "]\n";
             }
             $this->zip->close();
             $this->zip = null;

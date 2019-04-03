@@ -253,7 +253,7 @@ class CNabuPHPClassListBuilder extends CNabuPHPClassTableAbstractBuilder
                          : $this->class_namespace
         ;
         $this->getDocument()->addUse('\\' . $keyed_namespace . '\\' . $this->item_class_name);
-        $this->getDocument()->adduse('\nabu\core\CNabuEngine');
+        $this->getDocument()->adduse(NABU_ENGINE_CLASS);
 
         $fragment = new CNabuPHPMethodBuilder($this, 'acquireItem');
         $fragment->addComment(
