@@ -204,7 +204,7 @@ class CNabuPHPClassTableAbstractBuilder extends CNabuPHPClassBuilder
      */
     public function getDictionary()
     {
-        return $his->dictionary;
+        return $this->dictionary;
     }
 
     /**
