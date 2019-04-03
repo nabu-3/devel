@@ -1,7 +1,7 @@
 {
     "name": "nabu-3/sdk",
     "description": "nabu-3 SDK package to extend Framework with extensions for developers",
-    "version": "3.0.8",
+    "version": "3.0.9",
     "type": "nabu-sdk",
     "keywords": [ "nabu", "nabu-3", "devel", "developer", "development", "framework", "frameworks", "sdk" ],
     "license": "Apache-2.0",
