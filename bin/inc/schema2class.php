@@ -501,7 +501,7 @@ createXML(
 createEntity(
     'nb_site_target_medioteca',
     'nabu\data\site\base',
-    'CNabuSiteTargetMedioteca',
+    'CNabuSiteTargetMediotecaBase',
     'Site Target Medioteca',
     true,
     $dictionary
