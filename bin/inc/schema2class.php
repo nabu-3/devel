@@ -1,6 +1,7 @@
 <?php
 
-/*  Copyright 2009-2011 Rafael Gutierrez Martinez
+/** @license
+ *  Copyright 2009-2011 Rafael Gutierrez Martinez
  *  Copyright 2012-2013 Welma WEB MKT LABS, S.L.
  *  Copyright 2014-2016 Where Ideas Simply Come True, S.L.
  *  Copyright 2017 nabu-3 Group
@@ -502,7 +503,7 @@ createXML(
 createEntity(
     'nb_site_target_medioteca',
     'nabu\data\site\base',
-    'CNabuSiteTargetMedioteca',
+    'CNabuSiteTargetMediotecaBase',
     'Site Target Medioteca',
     true,
     $dictionary

@@ -19,17 +19,30 @@
  *  limitations under the License.
  */
 
-use nabu\core\CNabuEngine;
+namespace nabu\sdk\builders\php;
+
+use \nabu\sdk\builders\CNabuAbstractBuilder;
+use \nabu\sdk\builders\php\CNabuPHPMethodBuilder;
 
 /**
  * @author Rafael Gutierrez <rgutierrez@nabu-3.com>
- * @since 3.0.12
- * @version 3.0.12
- * @package \sdk
+ * @version 3.0.0 Surface
  */
-
-require_once 'common.php';
-require_once 'cli.php';
-
-CNabuEngine::setOperationModeCLI();
-CNabuEngine::getEngine()->runApplication('\nabu\sdk\app\CNabuSDKExportApp');
+class CNabuPHPConstructorBuilder extends CNabuPHPMethodBuilder
+{
+    /**
+     * Constructs the instance.
+     * @param CNabuAbstractBuilder $container Container builder object
+     * @param int $scope Scope of the constructor. By default public.
+     * @param boolean $static If true the method is static.
+     * @param boolean $abstract If true the method is abstract.
+     */
+    public function __construct(
+        $container,
+        $scope = CNabuPHPMethodBuilder::METHOD_PUBLIC,
+        $static = false,
+        $abstract = false
+    ) {
+        parent::__construct($container, '__construct', $scope, $static, $abstract);
+    }
+}
