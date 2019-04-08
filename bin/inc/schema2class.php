@@ -34,7 +34,7 @@ $nb_engine = CNabuEngine::getEngine();
 $mysql_connector = $nb_engine->getMainDB();
 
 if (!$mysql_connector->isConnected()) {
-    die ("Database not found or not connected\n");
+    die("Database not found or not connected\n");
 }
 
 $creator_name = nbCLICheckOption('a', 'author', ':', null, false);
@@ -86,7 +86,8 @@ $dictionary = array(
     'cta' => 'CTA',
     'sku' => 'SKU',
     'vr' => 'VR',
-    'signin' => 'SignIn'
+    'signin' => 'SignIn',
+    'mimetype' => 'MIMEType'
 );
 
 // Language: nabu\data\lang
