@@ -19,17 +19,14 @@
  *  limitations under the License.
  */
 
-use nabu\core\CNabuEngine;
+namespace nabu\sdk\utils;
 
 /**
  * @author Rafael Gutierrez <rgutierrez@nabu-3.com>
- * @since 3.0.12
- * @version 3.0.12
- * @package \sdk
+ * @version 3.0.0 Surface
+ * @package name
  */
-
-require_once 'common.php';
-require_once 'cli.php';
-
-CNabuEngine::setOperationModeCLI();
-CNabuEngine::getEngine()->runApplication('\nabu\sdk\app\CNabuSDKExportApp');
+class CNabuSchema2ClassApp
+{
+    /** @todo Implement this class and move here the process of create MySQL Tables as classes **/
+}

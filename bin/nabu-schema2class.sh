@@ -22,17 +22,16 @@ echo
 
 # This variable defines the path for config files. You can change this value.
 # When nabu-3 install script runs, he creates this path if not exists.
-NABU_ETC_PATH=/etc/opt/nabu-3.conf.d
 SCRIPT_PATH=`realpath $0`
 SCRIPT_PATH=`dirname ${SCRIPT_PATH}`
 
-if [ -f ${SCRIPT_PATH}/nabu-3.conf ] ; then
-    source ${SCRIPT_PATH}/nabu-3.conf
+if [ -f ${SCRIPT_PATH}/../etc/nabu-3.conf ] ; then
+    source ${SCRIPT_PATH}/../etc/nabu-3.conf
 else
     INSTALL_PATH=`pwd`/${0}
     INSTALL_PATH=`dirname ${INSTALL_PATH}`
-    if [ -f ${INSTALL_PATH}/nabu-3.conf ] ; then
-        source ${INSTALL_PATH}/nabu-3.conf
+    if [ -f ${INSTALL_PATH}/../etc/nabu-3.conf ] ; then
+        source ${INSTALL_PATH}/../etc/nabu-3.conf
     else
         echo Config file not found
         exit 1

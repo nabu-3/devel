@@ -19,17 +19,18 @@
  *  limitations under the License.
  */
 
-use nabu\core\CNabuEngine;
+namespace nabu\sdk\readers;
+use nabu\core\CNabuObject;
+use nabu\sdk\readers\interfaces\INabuReader;
 
 /**
+ * Abstract class read files.
  * @author Rafael Gutierrez <rgutierrez@nabu-3.com>
- * @since 3.0.12
- * @version 3.0.12
- * @package \sdk
+ * @since 3.0.8 Surface
+ * @version 3.0.8 Surface
+ * @package nabu\sdk\readers;
  */
+abstract class CNabuAbstractReader extends CNabuObject implements INabuReader
+{
 
-require_once 'common.php';
-require_once 'cli.php';
-
-CNabuEngine::setOperationModeCLI();
-CNabuEngine::getEngine()->runApplication('\nabu\sdk\app\CNabuSDKExportApp');
+}

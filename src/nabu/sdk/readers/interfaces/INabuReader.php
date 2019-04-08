@@ -19,17 +19,28 @@
  *  limitations under the License.
  */
 
-use nabu\core\CNabuEngine;
+namespace nabu\sdk\readers\interfaces;
 
 /**
+ * Interface to define Nabu readers to read files automatically.
  * @author Rafael Gutierrez <rgutierrez@nabu-3.com>
- * @since 3.0.12
- * @version 3.0.12
- * @package \sdk
+ * @since 3.0.8 Surface
+ * @version 3.0.8 Surface
  */
+interface INabuReader
+{
+    /**
+     * Import the file and parse contents.
+     * @param string $filename File name to import.
+     * @param INabuReaderWalker $walker Walker to process file contents.
+     * @return bool Returns true if the file is well imported.
+     */
+    public function importFromFile(string $filename, INabuReaderWalker $walker = null) : int;
 
-require_once 'common.php';
-require_once 'cli.php';
-
-CNabuEngine::setOperationModeCLI();
-CNabuEngine::getEngine()->runApplication('\nabu\sdk\app\CNabuSDKExportApp');
+    /**
+     * Seek a fragment of file by their pointer.
+     * @param mixed $pointer Pointer to the fragment. The type of pointer varies in each implementation.
+     * @return mixed Returns the fragment seeked if exists of false if no.
+     */
+    public function seekFragment($pointer);
+}
