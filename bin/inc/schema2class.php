@@ -87,7 +87,8 @@ $dictionary = array(
     'sku' => 'SKU',
     'vr' => 'VR',
     'signin' => 'SignIn',
-    'mimetype' => 'MIMEType'
+    'mimetype' => 'MIMEType',
+    'httponly' => 'HTTPOnly'
 );
 
 // Language: nabu\data\lang
